@@ -45,7 +45,7 @@ namespace Asaph.Infrastructure.IntegrationTests
         }
     }
 
-    public class CosmosDbFixture : IDisposable, IAsyncDisposable
+    public class CosmosDbFixture : IDisposable
     {
         private CosmosClient _cosmosClient;
         private Database _database;
@@ -85,23 +85,11 @@ namespace Asaph.Infrastructure.IntegrationTests
             {
                 if (_cosmosClient != null)
                 {
+                    _ = _database.DeleteAsync().Result;
                     _cosmosClient.Dispose();
                     _cosmosClient = null;
                 }
             }
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            await DisposeAsyncCore();
-            Dispose(false);
-            GC.SuppressFinalize(this);
-        }
-
-        public virtual async ValueTask DisposeAsyncCore()
-        {
-            await _database.DeleteAsync();
-            _database = null;
         }
 
         #endregion
