@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asaph.Infrastructure.Integr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asaph.Bootstrapper", "Asaph.Bootstrapper\Asaph.Bootstrapper.csproj", "{18C33269-E2C9-487A-A72E-9502983A21A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asaph.WebApi", "Asaph.WebApi\Asaph.WebApi.csproj", "{B80DFD71-267C-490F-ADCB-0E96928B9B52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{18C33269-E2C9-487A-A72E-9502983A21A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18C33269-E2C9-487A-A72E-9502983A21A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18C33269-E2C9-487A-A72E-9502983A21A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B80DFD71-267C-490F-ADCB-0E96928B9B52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B80DFD71-267C-490F-ADCB-0E96928B9B52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B80DFD71-267C-490F-ADCB-0E96928B9B52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B80DFD71-267C-490F-ADCB-0E96928B9B52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
