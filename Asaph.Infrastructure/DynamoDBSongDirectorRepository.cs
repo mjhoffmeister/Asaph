@@ -123,6 +123,11 @@ namespace Asaph.Infrastructure
 
         }
 
+        public async Task<Result<IEnumerable<SongDirector>>> TryGetAllAsync()
+        {
+            throw new System.NotImplementedException();
+        }
+
         private static async Task<Result> CreateSongDirectorsTableIfNotExists(
             AmazonDynamoDBClient dynamoDBClient)
         {

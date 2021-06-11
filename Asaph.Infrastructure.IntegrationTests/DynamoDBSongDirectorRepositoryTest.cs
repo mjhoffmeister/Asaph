@@ -2,6 +2,8 @@
 using FluentResults;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -69,6 +71,28 @@ namespace Asaph.Infrastructure.IntegrationTests
             // Assert
 
             Assert.NotNull(findRankResult.Value);
+        }
+
+        [Theory]
+        [InlineData("us-east-2", true, 1)]
+        public async Task TryGetAll_SongDirectorsExist_ReturnsExpectedCount(
+            string awsRegionSystemName, bool useDynamoDBLocal, int expectedCount)
+        {
+            // Arrange
+
+            DynamoDBSongDirectorRepository dynamoDBSongDirectorRepository = await
+                GetDynamoDBSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
+
+            // Act
+
+            Result<IEnumerable<SongDirector>> getAllSongDirectorsResult = await
+                dynamoDBSongDirectorRepository
+                    .TryGetAllAsync()
+                    .ConfigureAwait(false);
+
+            // Assert
+
+            Assert.Equal(expectedCount, getAllSongDirectorsResult.Value.Count());
         }
 
         private async Task<DynamoDBSongDirectorRepository> GetDynamoDBSongDirectorRepository(
