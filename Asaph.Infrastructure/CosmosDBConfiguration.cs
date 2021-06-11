@@ -2,10 +2,13 @@
 {
     public record CosmosDBConfiguration
     {
-        public CosmosDBConfiguration() => (ConnectionString, ContainerId, DatabaseId) = (null, null, null);
+        public CosmosDBConfiguration() => (ConnectionString, ContainerId, DatabaseId) = 
+            (null, null, null);
 
-        public CosmosDBConfiguration(string? connectionString, string? containerId, string databaseId) =>
-            (ConnectionString, ContainerId, DatabaseId) = (connectionString, containerId, databaseId);
+        public CosmosDBConfiguration(
+            string? connectionString, string? containerId, string databaseId) =>
+            (ConnectionString, ContainerId, DatabaseId) = 
+                (connectionString, containerId, databaseId);
 
         public string? ConnectionString { get; init; }
 

@@ -5,10 +5,19 @@
     /// </summary>
     public class AddSongDirectorDefaultBoundary : IAddSongDirectorBoundary<AddSongDirectorResponse>
     {
-        public AddSongDirectorResponse InsufficientPermissions(AddSongDirectorResponse response) => response;
+        public AddSongDirectorResponse InsufficientPermissions(AddSongDirectorResponse response) => 
+            response;
 
-        public AddSongDirectorResponse SongDirectorAdded(AddSongDirectorResponse response) => response;
+        public AddSongDirectorResponse RequesterRankNotFound(AddSongDirectorResponse response) =>
+            response;
 
-        public AddSongDirectorResponse ValidationFailure(AddSongDirectorResponse response) => response;
+        public AddSongDirectorResponse SongDirectorAdded(AddSongDirectorResponse response) => 
+            response;
+
+        public AddSongDirectorResponse SongDirectorAddFailed(AddSongDirectorResponse response) =>
+            response;
+
+        public AddSongDirectorResponse ValidationFailure(AddSongDirectorResponse response) => 
+            response;
     }
 }

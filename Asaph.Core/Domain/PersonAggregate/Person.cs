@@ -36,7 +36,8 @@ namespace Asaph.Core.Domain.PersonAggregate
         /// <param name="emailAddress">Email address.</param>
         /// <param name="phoneNumber">Phone number.</param>
         /// <returns>The result of the create attempt.</returns>
-        public static Result<Person> TryCreate(string? fullName, string? emailAddress, string? phoneNumber)
+        public static Result<Person> TryCreate(
+            string? fullName, string? emailAddress, string? phoneNumber)
         {
             // Try to normalize the phone number
             Result<string?> phoneNumberNormalizationResult = TryNormalizePhoneNumber(phoneNumber);
@@ -53,7 +54,8 @@ namespace Asaph.Core.Domain.PersonAggregate
             if (validationResult.IsFailed)
                 return validationResult;
 
-            return Result.Ok(new Person(fullName!, emailAddress!, phoneNumberNormalizationResult.Value));
+            return Result.Ok(
+                new Person(fullName!, emailAddress!, phoneNumberNormalizationResult.Value));
         }
 
         /// <summary>
@@ -86,7 +88,8 @@ namespace Asaph.Core.Domain.PersonAggregate
             }
             catch (RegexMatchTimeoutException)
             {
-                return Result.Fail("A timeout occurred while trying to validate email address domain.");
+                return Result.Fail(
+                    "A timeout occurred while trying to validate email address domain.");
             }
             catch (ArgumentException)
             {

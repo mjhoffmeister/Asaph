@@ -1,5 +1,6 @@
 ﻿using Asaph.Core.Domain.SongDirectorAggregate;
 using Asaph.Core.Interfaces;
+using FluentResults;
 using Microsoft.Azure.Cosmos;
 using System;
 using System.Threading.Tasks;
@@ -11,15 +12,12 @@ namespace Asaph.Infrastructure
         public CosmosDBSongDirectorRepository(CosmosDBConfiguration configuration) 
             : base(configuration with { ContainerId = nameof(SongDirector) }) { }
 
-        public async Task<Guid> AddAsync(SongDirector songDirector)
+        public async Task<Result> TryAddAsync(SongDirector songDirector)
         {
-            // Create a new GUID for the new song director's id
-            var id = Guid.NewGuid();
-
             // Create a song director document
             SongDirectorDocument songDirectorDocument = new()
             {
-                Id = id.ToString(),
+                IsActive = songDirector.IsActive,
                 EmailAddress = songDirector.EmailAddress,
                 FullName = songDirector.FullName,
                 PhoneNumber = songDirector.PhoneNumber,
@@ -30,14 +28,13 @@ namespace Asaph.Infrastructure
             Container songDirectors = GetContainer();
 
             // Add the song director
-            await songDirectors.CreateItemAsync(songDirectorDocument, new PartitionKey(songDirectorDocument.Id));
+            await songDirectors.CreateItemAsync(songDirectorDocument);
 
-            // Set and return the id
-            songDirector.Id = id;
-            return id;
+            // Return a success result
+            return Result.Ok();
         }
 
-        public Task<Rank?> FindRankAsync(string emailAddress)
+        public Task<Result<Rank?>> TryFindRankAsync(string emailAddress)
         {
             throw new NotImplementedException();
         }

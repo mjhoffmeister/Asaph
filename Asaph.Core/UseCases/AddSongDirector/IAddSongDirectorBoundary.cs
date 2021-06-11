@@ -4,7 +4,11 @@
     {
         TOutput InsufficientPermissions(AddSongDirectorResponse response);
 
+        TOutput RequesterRankNotFound(AddSongDirectorResponse response);
+
         TOutput SongDirectorAdded(AddSongDirectorResponse response);
+
+        TOutput SongDirectorAddFailed(AddSongDirectorResponse response);
 
         TOutput ValidationFailure(AddSongDirectorResponse response);
     }

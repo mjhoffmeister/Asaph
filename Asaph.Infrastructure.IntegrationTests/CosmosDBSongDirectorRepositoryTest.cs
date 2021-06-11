@@ -1,4 +1,5 @@
 using Asaph.Core.Domain.SongDirectorAggregate;
+using FluentResults;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -18,7 +19,8 @@ namespace Asaph.Infrastructure.IntegrationTests
 
         [Theory]
         [InlineData("Asaph", "SongDirector", "/id")]
-        public async Task Add_ValidSongDirector_ReturnsGuid(string databaseId, string containerId, string partitionKeyPath)
+        public async Task Add_ValidSongDirector_ReturnsSuccessResult(
+            string databaseId, string containerId, string partitionKeyPath)
         {
             // Arrange
 
@@ -27,7 +29,7 @@ namespace Asaph.Infrastructure.IntegrationTests
 
             // Create a song director
             var songDirector = SongDirector
-                .TryCreate("John Doe", "john.doe@gmail.com", "124-456-3456", "Apprentice")
+                .TryCreate("John Doe", "john.doe@gmail.com", "124-456-3456", "Apprentice", true)
                 .Value;
 
 
@@ -37,11 +39,12 @@ namespace Asaph.Infrastructure.IntegrationTests
 
             // Act
 
-            Guid newSongDirectorId = await cosmosDBSongDirectorRepository.AddAsync(songDirector);
+            Result addSongDirectorResult = await cosmosDBSongDirectorRepository.TryAddAsync(
+                songDirector);
 
             // Assert
 
-            Assert.NotEqual(Guid.Empty, newSongDirectorId);
+            Assert.True(addSongDirectorResult.IsSuccess);
         }
     }
 
@@ -57,7 +60,8 @@ namespace Asaph.Infrastructure.IntegrationTests
         /// <summary>
         /// Initializes a database for the test.
         /// </summary>
-        public async Task InitializeDatabase(string databaseId, string containerId, string partitionKeyPath)
+        public async Task InitializeDatabase(
+            string databaseId, string containerId, string partitionKeyPath)
         {
             ConnectionString = new ConfigurationBuilder()
                 .AddUserSecrets<CosmosDBSongDirectorRepositoryTest>()
