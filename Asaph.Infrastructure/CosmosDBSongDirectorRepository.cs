@@ -3,6 +3,7 @@ using Asaph.Core.Interfaces;
 using FluentResults;
 using Microsoft.Azure.Cosmos;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Asaph.Infrastructure
@@ -35,6 +36,11 @@ namespace Asaph.Infrastructure
         }
 
         public Task<Result<Rank?>> TryFindRankAsync(string emailAddress)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Result<IEnumerable<SongDirector>>> TryGetAllAsync()
         {
             throw new NotImplementedException();
         }
