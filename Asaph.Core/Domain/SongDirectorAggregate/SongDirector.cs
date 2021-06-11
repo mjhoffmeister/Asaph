@@ -5,9 +5,14 @@ namespace Asaph.Core.Domain.SongDirectorAggregate
 {
     public class SongDirector : Person
     {
-        private SongDirector(string fullName, string emailAddress, string? phoneNumber, Rank? rank) :
-            base(fullName, emailAddress, phoneNumber) =>
-                Rank = rank;
+        private SongDirector(
+            string fullName, string emailAddress, string? phoneNumber, Rank? rank, bool isActive) :
+            base(fullName, emailAddress, phoneNumber) => (IsActive, Rank) = (isActive, rank);
+
+        /// <summary>
+        /// True if the song director is active; false, otherwise.
+        /// </summary>
+        public bool IsActive { get; }
 
         /// <summary>
         /// Rank.
@@ -21,9 +26,14 @@ namespace Asaph.Core.Domain.SongDirectorAggregate
         /// <param name="emailAddress">Email address.</param>
         /// <param name="rankName">Rank name.</param>
         /// <param name="phoneNumber">Phone number.</param>
+        /// <param name="isActive">True if the song director is active; false, otherwise.</param>
         /// <returns>THe result of the attempt.</returns>
         public static Result<SongDirector> TryCreate(
-            string? fullName, string? emailAddress, string? phoneNumber, string? rankName)
+            string? fullName,
+            string? emailAddress,
+            string? phoneNumber,
+            string? rankName,
+            bool isActive)
         {
             // Try to get rank
             Result<Rank?> createRankResult = Rank.TryGetByName(rankName);
@@ -40,7 +50,8 @@ namespace Asaph.Core.Domain.SongDirectorAggregate
                 return validationResult;
 
             // Return a success result with the new song director if the validation succeeded
-            return Result.Ok(new SongDirector(fullName!, emailAddress!, phoneNumber, createRankResult.Value));
+            return Result.Ok(new SongDirector(
+                fullName!, emailAddress!, phoneNumber, createRankResult.Value, isActive));
         }
     }
 }

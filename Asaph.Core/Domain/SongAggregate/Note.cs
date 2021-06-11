@@ -12,7 +12,7 @@ namespace Asaph.Core.Domain.SongAggregate
 
         public static Note ASharp => new("A♯", 10);
 
-        public static Note BFlat => new Note("B♭", 11);
+        public static Note BFlat => new("B♭", 11);
 
         public static Note B => new("B", 12);
 

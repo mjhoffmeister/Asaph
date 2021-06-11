@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Asaph.WebApi.HydraClasses
+namespace Asaph.WebApi.EntryPoint
 {
-    public class SongDirectorHydraClass
+    public class EntryPoint
     {
+
     }
 }
