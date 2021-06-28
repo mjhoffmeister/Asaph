@@ -1,4 +1,5 @@
 ﻿using Asaph.Core.UseCases.AddSongDirector;
+using Hydra.NET;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,6 +14,7 @@ namespace Asaph.WebApi.AddSongDirector
     public class AddSongDirectorController : ControllerBase
     {
         [HttpPost]
+        //[Operation()]
         public ActionResult<AddSongDirectorRequest> Post(
             AddSongDirectorRequest addSongDirectorRequest)
         {

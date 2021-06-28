@@ -19,9 +19,9 @@ namespace Asaph.Infrastructure.IntegrationTests
     {
         public DynamoDBSongDirectorRepositoryTest() => InitializeAwsCredentials();
 
-        private string AwsAccessKeyId { get; set; }
+        private string? AwsAccessKeyId { get; set; }
 
-        private string AwsSecretAccessKey { get; set; }
+        private string? AwsSecretAccessKey { get; set; }
 
         private static string LocalDynamoDBUrl => "http://localhost:8000";
 
