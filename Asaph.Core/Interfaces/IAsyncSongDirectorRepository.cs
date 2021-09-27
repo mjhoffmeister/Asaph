@@ -29,5 +29,14 @@ namespace Asaph.Core.Interfaces
         /// details about any errors that were encountered.
         /// </returns>
         Task<Result<IEnumerable<SongDirector>>> TryGetAllAsync();
+
+        /// <summary>
+        /// Tries to get all ranks.
+        /// </summary>
+        /// <returns>
+        /// A result with a collection of ranks if they could be retrieved. Otherwise, details about
+        /// any errors that were encountered.
+        /// </returns>
+        Task<Result<IEnumerable<Rank>>> TryGetRanks();
     }
 }

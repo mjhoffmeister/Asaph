@@ -1,18 +1,16 @@
 ﻿using Hydra.NET;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Asaph.WebApi.Models
 {
     [SupportedClass(
-        "doc:SongDirector",
+        "SongDirector",
         Title = "Song director",
         Description = "Represents a song director.")
     ]
-    public record SongDirectorModel
+    [SupportedCollection("SongDirectorCollection", Title = "Song directors")]
+    public record SongDirectorGrandmasterViewModel
     {
         [JsonPropertyName("@id")]
         public Uri? Id { get; set; }

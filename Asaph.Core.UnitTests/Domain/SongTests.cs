@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Asaph.Core.UnitTests.Domain
 {
-    public static class SongTest
+    public static class SongTests
     {
         [Theory]
         [InlineData("It Is Well with My Soul", "D♭", "A♭5", "D♭5", 84, "Forgiveness,Peace")]
@@ -48,7 +48,8 @@ namespace Asaph.Core.UnitTests.Domain
         [InlineData("E♭5", true)]
         [InlineData("D10", false)]
         [InlineData("H♯4", false)]
-        public static void TryParsePitch_Multiple_ReturnsExpectedIsSuccess(string pitchString, bool expectedIsSuccess)
+        public static void TryParsePitch_Multiple_ReturnsExpectedIsSuccess(
+            string pitchString, bool expectedIsSuccess)
         {
             // Act
 

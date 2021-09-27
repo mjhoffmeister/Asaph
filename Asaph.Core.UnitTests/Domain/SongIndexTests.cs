@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Asaph.Core.UnitTests.Domain
 {
-    public static class SongIndexTest
+    public static class SongIndexTests
     {
         //public static void TryCreate_Multiple_ReturnsExpectedIsSuccess(string name, )
     }

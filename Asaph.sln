@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30611.23
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asaph.Core", "Asaph.Core\Asaph.Core.csproj", "{41065B0E-9CF8-4344-B6EF-3F5AE1C4DE61}"
 EndProject
@@ -13,9 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asaph.Infrastructure", "Asa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asaph.Infrastructure.IntegrationTests", "Asaph.Infrastructure.IntegrationTests\Asaph.Infrastructure.IntegrationTests.csproj", "{01109CEB-26D2-483A-9418-7704369900DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asaph.Bootstrapper", "Asaph.Bootstrapper\Asaph.Bootstrapper.csproj", "{18C33269-E2C9-487A-A72E-9502983A21A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asaph.Bootstrapper", "Asaph.Bootstrapper\Asaph.Bootstrapper.csproj", "{18C33269-E2C9-487A-A72E-9502983A21A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asaph.WebApi", "Asaph.WebApi\Asaph.WebApi.csproj", "{B80DFD71-267C-490F-ADCB-0E96928B9B52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asaph.WebApi", "Asaph.WebApi\Asaph.WebApi.csproj", "{B80DFD71-267C-490F-ADCB-0E96928B9B52}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asaph.WebApi.IntegrationTests", "Asaph.WebApi.IntegrationTests\Asaph.WebApi.IntegrationTests.csproj", "{D9A27BAB-7F4D-46AC-BB61-A1FE878377AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asaph.WebApi.UnitTests", "Asaph.WebApi.UnitTests\Asaph.WebApi.UnitTests.csproj", "{D9D1F383-A2FF-47CD-ADA7-C73C9005789F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,14 @@ Global
 		{B80DFD71-267C-490F-ADCB-0E96928B9B52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B80DFD71-267C-490F-ADCB-0E96928B9B52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B80DFD71-267C-490F-ADCB-0E96928B9B52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9A27BAB-7F4D-46AC-BB61-A1FE878377AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9A27BAB-7F4D-46AC-BB61-A1FE878377AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9A27BAB-7F4D-46AC-BB61-A1FE878377AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9A27BAB-7F4D-46AC-BB61-A1FE878377AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9D1F383-A2FF-47CD-ADA7-C73C9005789F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9D1F383-A2FF-47CD-ADA7-C73C9005789F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9D1F383-A2FF-47CD-ADA7-C73C9005789F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9D1F383-A2FF-47CD-ADA7-C73C9005789F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

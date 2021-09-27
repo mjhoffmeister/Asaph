@@ -1,11 +1,10 @@
 ﻿using Asaph.Core.UseCases.AddSongDirector;
+using Asaph.WebApi.Models;
 using Hydra.NET;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Asaph.WebApi.AddSongDirector
 {
@@ -14,8 +13,14 @@ namespace Asaph.WebApi.AddSongDirector
     public class AddSongDirectorController : ControllerBase
     {
         [HttpPost]
-        //[Operation()]
-        public ActionResult<AddSongDirectorRequest> Post(
+        [Operation(
+            typeof(Collection<SongDirectorGrandmasterViewModel>),
+            Method = Method.Post,
+            Title = "Add song director"
+        )]
+        [Authorize]
+        [EnableCors("AllowAll")]
+        public ActionResult<AddSongDirectorResponse> Post(
             AddSongDirectorRequest addSongDirectorRequest)
         {
             throw new NotImplementedException();
