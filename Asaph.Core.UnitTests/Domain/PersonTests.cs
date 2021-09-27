@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Asaph.Core.UnitTests.Domain
 {
-    public static class PersonTest
+    public static class PersonTests
     {
         [Theory]
         [InlineData("John Doe", "john.doe@mail.com", "123-456-1234", true)]

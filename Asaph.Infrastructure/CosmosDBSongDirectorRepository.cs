@@ -44,6 +44,11 @@ namespace Asaph.Infrastructure
         {
             throw new NotImplementedException();
         }
+
+        public Task<Result<IEnumerable<Rank>>> TryGetRanks()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

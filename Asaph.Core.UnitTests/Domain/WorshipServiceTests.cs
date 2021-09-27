@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Asaph.Core.UnitTests.Domain
 {
-    public static class WorshipServiceTest
+    public static class WorshipServiceTests
     {
         
     }

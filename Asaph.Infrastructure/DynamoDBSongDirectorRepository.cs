@@ -219,5 +219,10 @@ namespace Asaph.Infrastructure
                 "Could not list DynamoDB tables, so the existance of the " +
                 $"{_songDirectorTableName} table could not be determined. HTTP status code: " +
                 $"{listTablesResponse.HttpStatusCode}");
+
+        public Task<Result<IEnumerable<Rank>>> TryGetRanks()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

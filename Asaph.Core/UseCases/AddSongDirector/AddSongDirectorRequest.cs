@@ -15,7 +15,12 @@
         /// <param name="rank">Rank of the new song director.</param>
         /// <param name="isActive">True if the new song director is active; false, otherwise.</param>
         public AddSongDirectorRequest(
-            string requesterUsername, string? fullName, string? emailAddress, string? phoneNumber, string? rankName, bool isActive)
+            string requesterUsername,
+            string? fullName,
+            string? emailAddress,
+            string? phoneNumber,
+            string? rankName,
+            bool isActive)
         {
             EmailAddress = emailAddress;
             FullName = fullName;
