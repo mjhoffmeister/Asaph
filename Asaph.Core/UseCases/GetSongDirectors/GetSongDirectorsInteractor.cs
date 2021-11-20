@@ -1,5 +1,4 @@
-﻿using Asaph.Core.Domain.PersonAggregate;
-using Asaph.Core.Domain.SongDirectorAggregate;
+﻿using Asaph.Core.Domain.SongDirectorAggregate;
 using Asaph.Core.Interfaces;
 using FluentResults;
 using System.Collections.Generic;
@@ -8,47 +7,54 @@ using System.Threading.Tasks;
 
 namespace Asaph.Core.UseCases.GetSongDirectors
 {
+    /// <summary>
+    /// Interactor for the Get Song Directors use case.
+    /// </summary>
+    /// <typeparam name="TOutput">Output type.</typeparam>
     public class GetSongDirectorsInteractor<TOutput> :
         IAsyncUseCaseInteractor<GetSongDirectorsRequest, TOutput>
     {
         private readonly IGetSongDirectorBoundary<TOutput> _boundary;
-        private readonly IAsyncSongDirectorRepository _songDirectorRepository;
+        private readonly IAsyncRepository<SongDirector> _songDirectorRepository;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetSongDirectorsInteractor{TOutput}"/>
+        /// class.
+        /// </summary>
+        /// <param name="songDirectorRepository">Song director repository.</param>
+        /// <param name="boundary">Boundary.</param>
         public GetSongDirectorsInteractor(
-            IAsyncSongDirectorRepository songDirectorRepository,
+            IAsyncRepository<SongDirector> songDirectorRepository,
             IGetSongDirectorBoundary<TOutput> boundary)
         {
             _boundary = boundary;
             _songDirectorRepository = songDirectorRepository;
         }
 
+        /// <inheritdoc/>
         public async Task<TOutput> HandleAsync(GetSongDirectorsRequest request)
         {
-            // Reference the requester's email address
-            string? requesterEmailAddress = request.RequesterEmailAddress;
-
-            // Validate that the requester's email address is valid
-            if (!Person.ValidateEmailAddress(requesterEmailAddress).IsSuccess)
-                return InvalidRequesterEmailAddressResponse();
-
-            // TODO: validate that the requester is a person in Asaph
+            // Reference the requester's id
+            string requesterId = request.RequesterId;
 
             // Try to find the requester's song director rank
             Result<Rank?> findRankResult = await _songDirectorRepository
-                .TryFindRankAsync(requesterEmailAddress!);
+                .TryFindPropertyByIdAsync<Rank?>(requesterId, nameof(SongDirector.Rank))
+                .ConfigureAwait(false);
 
             // Get song directors from the repository
             Result<IEnumerable<SongDirector>> getSongDirectorsResult = await _songDirectorRepository
-                .TryGetAllAsync();
+                .TryGetAllAsync()
+                .ConfigureAwait(false);
 
             // If the request failed, return a failure result
             if (getSongDirectorsResult.IsFailed)
                 return FailedToGetSongDirectors(getSongDirectorsResult.GetErrorMessagesString());
 
             // Convert song director entities to models
-            IEnumerable<SongDirectorModel> songDirectorModels = getSongDirectorsResult.Value!
-                .Select(songDirector => 
-                    songDirector.ConvertToModel(requesterEmailAddress, findRankResult.Value));
+            IEnumerable<SongDirectorUseCaseModel> songDirectorModels = getSongDirectorsResult.Value!
+                .Select(songDirector =>
+                    songDirector.ConvertToUseCaseModel(requesterId, findRankResult.Value));
 
             // Return a success response
             return Success(songDirectorModels);
@@ -60,13 +66,7 @@ namespace Asaph.Core.UseCases.GetSongDirectors
                 GetSongDirectorsResponse.FailedToGetSongDirectors(errorMessage));
         }
 
-        private TOutput InvalidRequesterEmailAddressResponse()
-        {
-            return _boundary.InvalidRequesterEmailAddress(
-                GetSongDirectorsResponse.InvalidRequesterEmailAddress());
-        }
-
-        private TOutput Success(IEnumerable<SongDirectorModel> songDirectorModels) =>
+        private TOutput Success(IEnumerable<SongDirectorUseCaseModel> songDirectorModels) =>
             _boundary.Success(GetSongDirectorsResponse.Success(songDirectorModels));
     }
 }

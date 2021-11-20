@@ -1,9 +1,9 @@
-﻿using System;
-
-namespace Asaph.Core.Domain
+﻿namespace Asaph.Core.Domain
 {
     public abstract class Entity
     {
-        public Guid Id { get; set; }
+        public string? Id { get; private set; }
+
+        public void UpdateId(string? id) => Id = id;
     }
 }

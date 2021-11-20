@@ -1,40 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Asaph.Core.UseCases.GetSongDirectors
 {
+    /// <summary>
+    /// Response for the Get Song Directors use case.
+    /// </summary>
     public class GetSongDirectorsResponse
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetSongDirectorsResponse"/> class.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        /// <param name="songDirectors">Song directors.</param>
         private GetSongDirectorsResponse(
-            string message, bool isSuccess, IEnumerable<SongDirectorModel>? songDirectors = null)
+            string message,
+            IEnumerable<SongDirectorUseCaseModel>? songDirectors = null)
         {
-            IsSuccess = isSuccess;
             Message = message;
             SongDirectors = songDirectors;
         }
 
-        public bool IsSuccess { get; }
-
+        /// <summary>
+        /// Message.
+        /// </summary>
         public string Message { get; }
 
-        public IEnumerable<SongDirectorModel>? SongDirectors { get; }
+        /// <summary>
+        /// Song directors.
+        /// </summary>
+        public IEnumerable<SongDirectorUseCaseModel>? SongDirectors { get; }
 
+        /// <summary>
+        /// Creates a response indicating that song directors couldn't be retrieved.
+        /// </summary>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns><see cref="GetSongDirectorsResponse"/>.</returns>
         public static GetSongDirectorsResponse FailedToGetSongDirectors(string errorMessage) =>
-            new(errorMessage, false);
+            new(errorMessage);
 
-        public static GetSongDirectorsResponse InvalidRequesterEmailAddress()
+        /// <summary>
+        /// Creates a success response with the retrieved song directors.
+        /// </summary>
+        /// <param name="songDirectors">Song directors.</param>
+        /// <returns><see cref="GetSongDirectorsResponse"/>.</returns>
+        public static GetSongDirectorsResponse Success(
+            IEnumerable<SongDirectorUseCaseModel> songDirectors)
         {
-            return new(
-                "Could not get song directors because the requestor's email address was invalid.",
-                false);
-        }
-
-        public static GetSongDirectorsResponse Success(IEnumerable<SongDirectorModel> songDirectors)
-        {
-            return new("Success.", true, songDirectors);
+            return new("Success.", songDirectors);
         }
     }
 }

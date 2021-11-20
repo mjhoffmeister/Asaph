@@ -1,14 +1,27 @@
 ﻿using Asaph.Core.Domain.SongAggregate;
 using FluentResults;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Asaph.Core.UnitTests.Domain
 {
+    /// <summary>
+    /// Tests the Song entity.
+    /// </summary>
     public static class SongTests
     {
+        /// <summary>
+        /// Tests creating songs.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="key">Key.</param>
+        /// <param name="startingPitch">Starting pitch.</param>
+        /// <param name="endingPitch">Ending pitch.</param>
+        /// <param name="beatsPerMinute">Beats per minute.</param>
+        /// <param name="themesString">Themes.</param>
+        /// <exception cref="NotImplementedException">
+        /// Throws because the test is not yet implemented.
+        /// </exception>
         [Theory]
         [InlineData("It Is Well with My Soul", "D♭", "A♭5", "D♭5", 84, "Forgiveness,Peace")]
         public static void TryCreate_Multiple_ReturnsExepectedIsSuccess(
@@ -22,6 +35,11 @@ namespace Asaph.Core.UnitTests.Domain
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Tests getting frequencies from pitches.
+        /// </summary>
+        /// <param name="validPitchString">A valid pitch string.</param>
+        /// <param name="expectedFrequency">The expected frequency.</param>
         [Theory]
         [InlineData("A4", 440)]
         [InlineData("E♭3", 155.5635)]
@@ -31,7 +49,7 @@ namespace Asaph.Core.UnitTests.Domain
         {
             // Arrange
 
-            var pitch = Pitch.TryParse(validPitchString).Value;
+            Pitch? pitch = Pitch.TryParse(validPitchString).Value;
 
             // Act
 
@@ -42,6 +60,11 @@ namespace Asaph.Core.UnitTests.Domain
             Assert.Equal(expectedFrequency, frequency, 4);
         }
 
+        /// <summary>
+        /// Tests parsing pitches.
+        /// </summary>
+        /// <param name="pitchString">Pitch string.</param>
+        /// <param name="expectedIsSuccess">Excpected success indicator.</param>
         [Theory]
         [InlineData("D3", true)]
         [InlineData("C♯4", true)]

@@ -1,5 +1,5 @@
-﻿using FluentResults;
-using System;
+﻿using System;
+using FluentResults;
 
 namespace Asaph.Core.Domain.SongAggregate
 {
