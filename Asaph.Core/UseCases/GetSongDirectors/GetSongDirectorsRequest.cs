@@ -1,10 +1,8 @@
 ﻿namespace Asaph.Core.UseCases.GetSongDirectors
 {
-    public class GetSongDirectorsRequest
-    {
-        public GetSongDirectorsRequest(string? requesterEmailAddress) =>
-            RequesterEmailAddress = requesterEmailAddress;
-
-        public string? RequesterEmailAddress { get; }
-    }
+    /// <summary>
+    /// Request for getting song directors.
+    /// </summary>
+    /// <param name="RequesterId">Requester id.</param>
+    public record GetSongDirectorsRequest(string RequesterId);
 }

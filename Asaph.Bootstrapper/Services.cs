@@ -1,19 +1,46 @@
-﻿using Asaph.Core.Interfaces;
-using Asaph.Infrastructure;
+﻿using Asaph.Core.Domain.SongDirectorAggregate;
+using Asaph.Core.Interfaces;
+using Asaph.Infrastructure.SongDirectorRepository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Asaph.Bootstrapper
 {
+    /// <summary>
+    /// Utility class for configuring services.
+    /// </summary>
     public static class Services
     {
-        public static void Configure(IServiceCollection services, IConfiguration configuration)
+        /// <summary>
+        /// Configures services for a given service collection and configuration.
+        /// </summary>
+        /// <param name="services">Services.</param>
+        /// <param name="configuration">Configuration.</param>
+        public static void AddAsaphServices(
+            this IServiceCollection services, IConfiguration configuration)
         {
-            // Get configuration for Cosmos DB
-            var cosmosDBConfiguration = configuration.GetSection("cosmosDBConfiguration").Get<CosmosDBConfiguration>();
+            // Get Azure AD B2C configuration
+            AzureAdb2cConfiguration azureAdb2CConfiguration = configuration
+                .GetSection("AzureAdb2c")
+                .Get<AzureAdb2cConfiguration>();
 
-            // Configure services
-            services.AddTransient<IAsyncSongDirectorRepository, CosmosDBSongDirectorRepository>(_ => new(cosmosDBConfiguration));
+            // Get Dynamo DB configuration
+            DynamoDBConfiguration dynamoDBConfiguration = configuration
+                .GetSection("DynamoDB")
+                .Get<DynamoDBConfiguration>();
+
+            // Register services
+            services.AddTransient<
+                        ISongDirectorRepositoryFragment,
+                        AzureAdb2cSongDirectorRepository>(
+                            factory => new(azureAdb2CConfiguration))
+                    .AddTransient<
+                        ISongDirectorRepositoryFragment,
+                        DynamoDBSongDirectorRepository>(
+                            factory => new(dynamoDBConfiguration))
+                    .AddTransient<
+                        IAsyncRepository<SongDirector>,
+                        AggregateSongDirectorRepository>();
         }
     }
 }

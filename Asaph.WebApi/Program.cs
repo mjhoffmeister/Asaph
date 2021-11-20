@@ -1,21 +1,27 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Asaph.WebApi
 {
-    public class Program
+    /// <summary>
+    /// Entry point for the API application.
+    /// </summary>
+    public static class Program
     {
+        /// <summary>
+        /// Entry point.
+        /// </summary>
+        /// <param name="args">Arguments.</param>
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
         }
 
+        /// <summary>
+        /// Creates a host builder for the API.
+        /// </summary>
+        /// <param name="args">Arguments.</param>
+        /// <returns><see cref="IHostBuilder"/>.</returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>

@@ -1,13 +1,14 @@
-﻿using FluentResults;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using FluentResults;
 
-namespace Asaph.Core.Domain.PersonAggregate
+namespace Asaph.Core.Domain.UserAggregate
 {
-    public class Person : Entity
+    public class User : Entity
     {
-        protected Person(string fullName, string emailAddress, string? phoneNumber)
+        protected User(
+            string fullName, string emailAddress, string? phoneNumber)
         {
             EmailAddress = emailAddress;
             FullName = fullName;
@@ -30,14 +31,16 @@ namespace Asaph.Core.Domain.PersonAggregate
         public string? PhoneNumber { get; }
 
         /// <summary>
-        /// Tries to create a person.
+        /// Tries to create a user.
         /// </summary>
         /// <param name="fullName">Full name.</param>
         /// <param name="emailAddress">Email address.</param>
         /// <param name="phoneNumber">Phone number.</param>
         /// <returns>The result of the create attempt.</returns>
-        public static Result<Person> TryCreate(
-            string? fullName, string? emailAddress, string? phoneNumber)
+        public static Result<User> TryCreate(
+            string? fullName,
+            string? emailAddress,
+            string? phoneNumber)
         {
             // Try to normalize the phone number
             Result<string?> phoneNumberNormalizationResult = TryNormalizePhoneNumber(phoneNumber);
@@ -55,7 +58,7 @@ namespace Asaph.Core.Domain.PersonAggregate
                 return validationResult;
 
             return Result.Ok(
-                new Person(fullName!, emailAddress!, phoneNumberNormalizationResult.Value));
+                new User(fullName!, emailAddress!, phoneNumberNormalizationResult.Value));
         }
 
         /// <summary>

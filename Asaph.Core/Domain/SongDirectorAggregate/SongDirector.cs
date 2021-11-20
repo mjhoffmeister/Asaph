@@ -1,13 +1,20 @@
-﻿using Asaph.Core.Domain.PersonAggregate;
+﻿using Asaph.Core.Domain.UserAggregate;
 using FluentResults;
 
 namespace Asaph.Core.Domain.SongDirectorAggregate
 {
-    public class SongDirector : Person
+    /// <summary>
+    /// Song director entity.
+    /// </summary>
+    public class SongDirector : User
     {
         private SongDirector(
-            string fullName, string emailAddress, string? phoneNumber, Rank? rank, bool isActive) :
-            base(fullName, emailAddress, phoneNumber) => (IsActive, Rank) = (isActive, rank);
+            string fullName,
+            string emailAddress,
+            string? phoneNumber,
+            Rank? rank,
+            bool isActive)
+            : base(fullName, emailAddress, phoneNumber) => (IsActive, Rank) = (isActive, rank);
 
         /// <summary>
         /// True if the song director is active; false, otherwise.
@@ -24,22 +31,22 @@ namespace Asaph.Core.Domain.SongDirectorAggregate
         /// </summary>
         /// <param name="fullName">Full name.</param>
         /// <param name="emailAddress">Email address.</param>
-        /// <param name="rankName">Rank name.</param>
         /// <param name="phoneNumber">Phone number.</param>
+        /// <param name="rankName">Rank name.</param>
         /// <param name="isActive">True if the song director is active; false, otherwise.</param>
-        /// <returns>THe result of the attempt.</returns>
+        /// <returns>The result of the attempt.</returns>
         public static Result<SongDirector> TryCreate(
             string? fullName,
             string? emailAddress,
             string? phoneNumber,
             string? rankName,
-            bool isActive)
+            bool? isActive)
         {
             // Try to get rank
             Result<Rank?> createRankResult = Rank.TryGetByName(rankName);
 
             // Validate person properties
-            Result<Person> validatePersonResult = TryCreate(fullName, emailAddress, phoneNumber);
+            Result<User> validatePersonResult = TryCreate(fullName, emailAddress, phoneNumber);
 
             // Merge the results into a single validation result
             Result validationResult = Result.Merge(
@@ -51,7 +58,11 @@ namespace Asaph.Core.Domain.SongDirectorAggregate
 
             // Return a success result with the new song director if the validation succeeded
             return Result.Ok(new SongDirector(
-                fullName!, emailAddress!, phoneNumber, createRankResult.Value, isActive));
+                fullName!,
+                emailAddress!,
+                phoneNumber,
+                createRankResult.Value,
+                isActive ?? false));
         }
     }
 }
