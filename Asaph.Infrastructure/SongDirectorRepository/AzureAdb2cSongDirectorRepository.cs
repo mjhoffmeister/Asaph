@@ -13,18 +13,6 @@ using System.Threading.Tasks;
 
 namespace Asaph.Infrastructure.SongDirectorRepository;
 
-[SuppressMessage(
-    "Minor Code Smell",
-    "S101:Types should be named in PascalCase",
-    Justification = "Analyzer doesn't correctly see AD B2C as a single acronym in PascalCase.")]
-public record AzureAdb2cConfiguration(
-    string ClientId,
-    string ClientSecret,
-    string Domain,
-    string ExtentionsAppClientId,
-    string TenantId,
-    string Scopes);
-
 /// <summary>
 /// Azure AD B2C implementation of <see cref="ISongDirectorRepositoryFragment"/>.
 /// </summary>
@@ -55,9 +43,9 @@ public class AzureAdb2cSongDirectorRepository : ISongDirectorRepositoryFragment
     /// <param name="configuration">Configuration.</param>
     public AzureAdb2cSongDirectorRepository(AzureAdb2cConfiguration configuration)
     {
-        _domain = configuration.Domain;
+        _domain = configuration.Domain!;
 
-        _rolesPropertyName = $"extension_{configuration.ExtentionsAppClientId}_Roles";
+        _rolesPropertyName = $"extension_{configuration.ExtensionsAppClientId}_Roles";
 
         _userSelectString = $"displayName,id,mail,mobilePhone,{_rolesPropertyName}";
 

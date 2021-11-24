@@ -1,5 +1,4 @@
 using Asaph.Bootstrapper;
-using Asaph.Core.Domain.SongDirectorAggregate;
 using Asaph.Core.UseCases;
 using Asaph.Core.UseCases.AddSongDirector;
 using Asaph.WebApi.AddSongDirector;
@@ -11,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
-using Microsoft.OpenApi.Models;
 
 namespace Asaph.WebApi
 {
@@ -45,7 +43,9 @@ namespace Asaph.WebApi
 
             // Configure the add song director use case
             services
-                .AddTransient<IAddSongDirectorBoundary<IActionResult>, AddSongDirectorApiBoundary>()
+                .AddTransient<
+                    IAddSongDirectorBoundary<IActionResult>,
+                    AddSongDirectorApiBoundary>(factory => new(new(hydraContextUri, "")))
                 .AddTransient<
                     IAsyncUseCaseInteractor<AddSongDirectorRequest, IActionResult>,
                     AddSongDirectorInteractor<IActionResult>>();
