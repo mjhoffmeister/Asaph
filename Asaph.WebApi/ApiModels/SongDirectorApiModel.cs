@@ -127,6 +127,7 @@ public class SongDirectorApiModel
                             },
                         },
                     },
+                    Tags = GetOpenApiTags(),
                 },
             },
         };
@@ -136,6 +137,23 @@ public class SongDirectorApiModel
             songDirectorsPath.Operations.Add(OperationType.Post, new OpenApiOperation
             {
                 Description = "Adds a song director.",
+                RequestBody = new OpenApiRequestBody
+                {
+                    Content = new Dictionary<string, OpenApiMediaType>()
+                    {
+                        ["application/json"] = new()
+                        {
+                            Schema = new OpenApiSchema
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Id = "SongDirector",
+                                    Type = ReferenceType.Schema,
+                                },
+                            },
+                        },
+                    },
+                },
                 Responses = new()
                 {
                     ["201"] = new()
@@ -156,6 +174,7 @@ public class SongDirectorApiModel
                         },
                     },
                 },
+                Tags = GetOpenApiTags(),
             });
         }
 
@@ -167,7 +186,7 @@ public class SongDirectorApiModel
     /// </summary>
     /// <param name="user">User making the request.</param>
     /// <returns><see cref="OpenApiSchema"/>.</returns>
-    public static OpenApiSchema GetOpenApiSchema(ClaimsPrincipal user)
+    public static OpenApiSchema GetJsonSchema(ClaimsPrincipal user)
     {
         // Initialize song director properties
         Dictionary<string, OpenApiSchema> songDirectorProperties = new()
@@ -184,7 +203,7 @@ public class SongDirectorApiModel
             },
             ["phoneNumber"] = new OpenApiSchema
             {
-                Title = "Phone Number",
+                Title = "Phone number",
                 Type = "string",
             },
         };
@@ -196,10 +215,8 @@ public class SongDirectorApiModel
             {
                 Title = "Rank",
                 Type = "string",
-                Enum = (IList<IOpenApiAny>)Roles
-                    .GetSongDirectorRankNames()
-                    .Select(rank => new OpenApiString(rank))
-                    .ToList(),
+                Enum = new List<IOpenApiAny>(
+                    Roles.GetSongDirectorRankNames().Select(rank => new OpenApiString(rank))),
             });
         }
 
@@ -244,6 +261,20 @@ public class SongDirectorApiModel
             PhoneNumber = useCaseModel.PhoneNumber,
             Rank = useCaseModel.Rank,
         };
+    }
+
+    /// <summary>
+    /// Gets OpenAPI tags for the song directors resource.
+    /// </summary>
+    /// <returns>A list of <see cref="OpenApiTag"/>s.</returns>
+    private static List<OpenApiTag> GetOpenApiTags()
+    {
+        OpenApiTag[] tags = new[]
+        {
+            new OpenApiTag { Name = "Song directors" },
+        };
+
+        return tags.ToList();
     }
 
     /// <summary>

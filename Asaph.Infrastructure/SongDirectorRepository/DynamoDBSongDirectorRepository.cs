@@ -11,7 +11,11 @@ using System.Threading.Tasks;
 
 namespace Asaph.Infrastructure.SongDirectorRepository;
 
-public record DynamoDBConfiguration(
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "StyleCop.CSharp.NamingRules",
+    "SA1313:Parameter names should begin with lower-case letter",
+    Justification = "StyleCop doesn't recognize record structs.")]
+public record struct DynamoDBConfiguration(
     string AwsAccessKeyId,
     string AwsSecretAccessKey,
     string AwsRegionSystemName,

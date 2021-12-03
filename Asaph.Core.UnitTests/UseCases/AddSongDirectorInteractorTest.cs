@@ -80,7 +80,12 @@ namespace Asaph.Core.UnitTests.UseCases
             // Configure the TryAddAsync method
             mockSongDirectorRepository
                 .Setup(m => m.TryAddAsync(It.IsAny<SongDirector>()))
-                .Returns(Task.FromResult(Result.Ok(Guid.NewGuid().ToString())));
+                .Returns<Task<Result<SongDirector>>>(addSongDirectorTask =>
+                {
+                    SongDirector songDirector = addSongDirectorTask.Result.Value;
+                    songDirector.UpdateId(Guid.NewGuid().ToString());
+                    return addSongDirectorTask;
+                });
 
             return mockSongDirectorRepository.Object;
         }

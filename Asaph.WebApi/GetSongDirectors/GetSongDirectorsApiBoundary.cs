@@ -12,7 +12,7 @@ namespace Asaph.WebApi.GetSongDirectors
     /// <summary>
     /// API boundary for the Get Song Directors use case.
     /// </summary>
-    public class GetSongDirectorsApiBoundary : ApiBoundary, IGetSongDirectorBoundary<IActionResult>
+    public class GetSongDirectorsApiBoundary : ApiBoundary, IGetSongDirectorsBoundary<IActionResult>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetSongDirectorsApiBoundary"/> class.
@@ -43,7 +43,7 @@ namespace Asaph.WebApi.GetSongDirectors
                 response.Message));
 
         /// <inheritdoc/>
-        public IActionResult RequestorSongDirectorRankNotFound(GetSongDirectorsResponse response) =>
+        public IActionResult RequesterSongDirectorRankNotFound(GetSongDirectorsResponse response) =>
             new UnauthorizedObjectResult(new Status(
                 HydraContext,
                 (int)HttpStatusCode.BadRequest,

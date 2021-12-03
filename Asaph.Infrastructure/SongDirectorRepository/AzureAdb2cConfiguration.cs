@@ -26,21 +26,18 @@ public class AzureAdb2cConfiguration
     /// <param name="domain">Domain.</param>
     /// <param name="extensionsAppClientId">Extensions app client id.</param>
     /// <param name="tenantId">Tenant id.</param>
-    /// <param name="scopes">Scopes.</param>
     public AzureAdb2cConfiguration(
         string clientId,
         string clientSecret,
         string domain,
         string extensionsAppClientId,
-        string tenantId,
-        string scopes)
+        string tenantId)
     {
         ClientId = clientId;
         ClientSecret = clientSecret;
         Domain = domain;
         ExtensionsAppClientId = extensionsAppClientId;
         TenantId = tenantId;
-        Scopes = scopes;
     }
 
     /// <summary>
@@ -67,9 +64,4 @@ public class AzureAdb2cConfiguration
     /// Tenant id.
     /// </summary>
     public string? TenantId { get; set; }
-
-    /// <summary>
-    /// Scopes
-    /// </summary>
-    public string? Scopes { get; set; }
 }
