@@ -14,7 +14,7 @@ namespace Asaph.Core.UseCases.GetSongDirectors
     public class GetSongDirectorsInteractor<TOutput> :
         IAsyncUseCaseInteractor<GetSongDirectorsRequest, TOutput>
     {
-        private readonly IGetSongDirectorBoundary<TOutput> _boundary;
+        private readonly IGetSongDirectorsBoundary<TOutput> _boundary;
         private readonly IAsyncRepository<SongDirector> _songDirectorRepository;
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Asaph.Core.UseCases.GetSongDirectors
         /// <param name="boundary">Boundary.</param>
         public GetSongDirectorsInteractor(
             IAsyncRepository<SongDirector> songDirectorRepository,
-            IGetSongDirectorBoundary<TOutput> boundary)
+            IGetSongDirectorsBoundary<TOutput> boundary)
         {
             _boundary = boundary;
             _songDirectorRepository = songDirectorRepository;

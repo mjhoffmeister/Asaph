@@ -47,7 +47,7 @@ namespace Asaph.Infrastructure.IntegrationTests
 
             // Act
 
-            Result<string> addResult = await azureAdb2cUserRepository
+            Result<SongDirectorDataModel> addResult = await azureAdb2cUserRepository
                 .TryAddAsync(songDirectorDataModel)
                 .ConfigureAwait(false);
 
@@ -55,7 +55,7 @@ namespace Asaph.Infrastructure.IntegrationTests
 
             Assert.NotNull(addResult.Value);
 
-            Console.WriteLine(addResult.Value);
+            Console.WriteLine(addResult.Value.Id);
         }
 
         /// <summary>
@@ -248,8 +248,7 @@ namespace Asaph.Infrastructure.IntegrationTests
                 configuration["AzureAdb2c:ClientSecret"],
                 configuration["AzureAdb2c:Domain"],
                 configuration["AzureAdb2c:ExtensionsAppClientId"],
-                configuration["AzureAdb2c:TenantId"],
-                "User.ReadWrite.All");
+                configuration["AzureAdb2c:TenantId"]);
         }
     }
 }

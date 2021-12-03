@@ -18,10 +18,8 @@ namespace Asaph.WebApi
         /// </returns>
         public static bool IsGrandmasterSongDirector(this ClaimsPrincipal claimsPrincipal)
         {
-            return true;
-
-            //return claimsPrincipal.Claims
-            //    .Any(claim => claim.Value.Contains(Roles.GrandmasterSongDirector));
+            return claimsPrincipal.Claims
+                .Any(claim => claim.Value.Contains(Roles.GrandmasterSongDirector));
         }
     }
 }

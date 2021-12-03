@@ -47,7 +47,7 @@ namespace Asaph.Infrastructure.IntegrationTests
 
             // Act
 
-            Result<string> addResult = await dynamoDBSongDirectorRepository
+            Result<SongDirectorDataModel> addResult = await dynamoDBSongDirectorRepository
                 .TryAddAsync(songDirectorDataModel)
                 .ConfigureAwait(false);
 
