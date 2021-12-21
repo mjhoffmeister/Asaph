@@ -1,25 +1,21 @@
 ﻿using Asaph.Core.UseCases;
-using System.Linq;
 using System.Security.Claims;
 
-namespace Asaph.WebApi
+/// <summary>
+/// <see cref="ClaimsPrincipal"/> extensions.
+/// </summary>
+internal static class ClaimsPrincipalExtensions
 {
     /// <summary>
-    /// <see cref="ClaimsPrincipal"/> extensions.
+    /// Determines whether a claims principal has the grandmaster song director role.
     /// </summary>
-    public static class ClaimsPrincipalExtensions
+    /// <param name="claimsPrincipal">Claims principal.</param>
+    /// <returns>
+    /// True if the claims principal has the grandmaster song director role; false, otherwise.
+    /// </returns>
+    public static bool IsGrandmasterSongDirector(this ClaimsPrincipal claimsPrincipal)
     {
-        /// <summary>
-        /// Determines whether a claims principal has the grandmaster song director role.
-        /// </summary>
-        /// <param name="claimsPrincipal">Claims principal.</param>
-        /// <returns>
-        /// True if the claims principal has the grandmaster song director role; false, otherwise.
-        /// </returns>
-        public static bool IsGrandmasterSongDirector(this ClaimsPrincipal claimsPrincipal)
-        {
-            return claimsPrincipal.Claims
-                .Any(claim => claim.Value.Contains(Roles.GrandmasterSongDirector));
-        }
+        return claimsPrincipal.Claims
+            .Any(claim => claim.Value.Contains(Roles.GrandmasterSongDirector));
     }
 }

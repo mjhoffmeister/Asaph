@@ -16,7 +16,8 @@ namespace Asaph.Bootstrapper
         /// </summary>
         /// <param name="services">Services.</param>
         /// <param name="configuration">Configuration.</param>
-        public static void AddAsaphServices(
+        /// <returns><see cref="IServiceCollection"/>.</returns>
+        public static IServiceCollection AddAsaphServices(
             this IServiceCollection services, IConfiguration configuration)
         {
             // Get Azure AD B2C configuration
@@ -41,6 +42,9 @@ namespace Asaph.Bootstrapper
                     .AddTransient<
                         IAsyncRepository<SongDirector>,
                         AggregateSongDirectorRepository>();
+
+            // Return the service collection reference
+            return services;
         }
     }
 }
