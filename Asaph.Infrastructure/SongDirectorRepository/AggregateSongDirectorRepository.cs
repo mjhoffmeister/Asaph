@@ -82,7 +82,7 @@ public class AggregateSongDirectorRepository : IAsyncRepository<SongDirector>
             .ConfigureAwait(false);
 
         // If all successful results contain the same value, return the first successful result
-        if (findPropertyByIdResults.Where(r => r.IsSuccess).Distinct().Skip(1).Any())
+        if (findPropertyByIdResults.Where(r => r.IsSuccess).Distinct().Any())
             return findPropertyByIdResults.First(r => r.IsSuccess);
 
         // If no results are successes, return a failure result

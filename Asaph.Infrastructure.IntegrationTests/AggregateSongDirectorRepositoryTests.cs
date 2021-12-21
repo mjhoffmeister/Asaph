@@ -6,255 +6,293 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Asaph.Infrastructure.IntegrationTests
+namespace Asaph.Infrastructure.IntegrationTests;
+
+/// <summary>
+/// Tests the <see cref="AggregateSongDirectorRepository"/> class.
+/// </summary>
+/// <remarks>
+/// To start DynamoDB locally, navigate to the directory where the local version was extracted,
+/// and run the following command:
+/// <c>java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb</c>
+/// Source: https://amzn.to/3zjA7B0.
+/// </remarks>
+[SuppressMessage(
+    "Major Code Smell",
+    "S1118:Utility classes should not have public constructors",
+    Justification = "A non-static class is needed for getting user secrets by type.")]
+public class AggregateSongDirectorRepositoryTests
 {
     /// <summary>
-    /// Tests the <see cref="AggregateSongDirectorRepository"/> class.
+    /// Tests adding a song director.
     /// </summary>
-    [SuppressMessage(
-        "Major Code Smell",
-        "S1118:Utility classes should not have public constructors",
-        Justification = "A non-static class is needed for getting user secrets by type.")]
-    public class AggregateSongDirectorRepositoryTests
+    /// <param name="awsRegionSystemName">AWS region system name.</param>
+    /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
+    /// <param name="fullName">Full name.</param>
+    /// <param name="emailAddress">Email address.</param>
+    /// <param name="phoneNumber">Phone number.</param>
+    /// <param name="rankName">Rank name.</param>
+    /// <param name="isActive">Active indicator.</param>
+    /// <returns>The async operation.</returns>
+    [Theory]
+    [InlineData(
+        "us-east-2",
+        true,
+        "Jane Doe",
+        "jane.doe@example.com",
+        "123-456-1234",
+        "Journeyer",
+        true)
+    ]
+    public static async Task TryAddAsync_ValidSongDirector_Succeeds(
+        string awsRegionSystemName,
+        bool useDynamoDBLocal,
+        string fullName,
+        string emailAddress,
+        string phoneNumber,
+        string rankName,
+        bool isActive)
     {
-        /// <summary>
-        /// Tests adding a song director.
-        /// </summary>
-        /// <param name="awsRegionSystemName">AWS region system name.</param>
-        /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
-        /// <param name="fullName">Full name.</param>
-        /// <param name="emailAddress">Email address.</param>
-        /// <param name="phoneNumber">Phone number.</param>
-        /// <param name="rankName">Rank name.</param>
-        /// <param name="isActive">Active indicator.</param>
-        /// <returns>The async operation.</returns>
-        [Theory]
-        [InlineData(
-            "us-east-2",
-            true,
-            "Jane Doe",
-            "jane.doe@example.com",
-            "123-456-1234",
-            "Journeyer",
-            true)
-        ]
-        public static async Task TryAddAsync_ValidSongDirector_Succeeds(
-            string awsRegionSystemName,
-            bool useDynamoDBLocal,
-            string fullName,
-            string emailAddress,
-            string phoneNumber,
-            string rankName,
-            bool isActive)
-        {
-            // Arrange
+        // Arrange
 
-            SongDirector songDirector = SongDirector
-                .TryCreate(fullName, emailAddress, phoneNumber, rankName, isActive)
-                .Value;
+        SongDirector songDirector = SongDirector
+            .TryCreate(fullName, emailAddress, phoneNumber, rankName, isActive)
+            .Value;
 
-            AggregateSongDirectorRepository aggregateSongDirectorRepository =
-                GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
+        AggregateSongDirectorRepository aggregateSongDirectorRepository =
+            GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
 
-            // Act
+        // Act
 
-            Result<SongDirector> addResult = await aggregateSongDirectorRepository
-                .TryAddAsync(songDirector)
-                .ConfigureAwait(false);
+        Result<SongDirector> addResult = await aggregateSongDirectorRepository
+            .TryAddAsync(songDirector)
+            .ConfigureAwait(false);
 
-            // Assert
+        // Assert
 
-            Assert.True(addResult.IsSuccess);
+        Assert.True(addResult.IsSuccess);
 
-            Console.WriteLine(addResult.Value.Id);
-        }
+        Console.WriteLine(addResult.Value.Id);
+    }
 
-        /// <summary>
-        /// Tests getting all song directors.
-        /// </summary>
-        /// <param name="awsRegionSystemName">AWS region system name.</param>
-        /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
-        /// <param name="expectedSongDirectorCount">Expected song director count.</param>
-        /// <returns>The async operation.</returns>
-        [Theory]
-        [InlineData("us-east-2", true, 3)]
-        public static async Task TryGetAllAsync(
-            string awsRegionSystemName,
-            bool useDynamoDBLocal,
-            int expectedSongDirectorCount)
-        {
-            // Arrange
+    /// <summary>
+    /// Tests getting rank for a song director.
+    /// </summary>
+    /// <param name="awsRegionSystemName">AWS region system name.</param>
+    /// <param name="useDynamoDBLocal">Indicates whether or not to use Dynamo DB local.</param>
+    /// <param name="songDirectorId">Song director id.</param>
+    /// <param name="expectedRankName">Expected rank name.</param>
+    /// <returns>The async operation.</returns>
+    [Theory]
+    [InlineData("us-east-2", true, "5144f766-dae4-45f1-9f1a-dc52070e6910", "Grandmaster")]
+    public static async Task TryFindPropertyById_Rank_ReturnsExpectedRankName(
+        string awsRegionSystemName,
+        bool useDynamoDBLocal,
+        string songDirectorId,
+        string expectedRankName)
+    {
+        // Arrange
 
-            AggregateSongDirectorRepository aggregateSongDirectorRepository =
-                GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
+        string propertyName = "Rank";
 
-            // Act
+        AggregateSongDirectorRepository aggregateSongDirectorRepository =
+            GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
 
-            Result<IEnumerable<SongDirector>> getAllResult = await aggregateSongDirectorRepository
-                .TryGetAllAsync()
-                .ConfigureAwait(false);
+        // Act
 
-            // Assert
+        Result<Rank?> getRankResult = await aggregateSongDirectorRepository
+            .TryFindPropertyByIdAsync<Rank?>(songDirectorId, propertyName)
+            .ConfigureAwait(false);
 
-            Assert.Equal(expectedSongDirectorCount, getAllResult.Value.Count());
-        }
+        // Assert
 
-        /// <summary>
-        /// Tests getting a song director by id.
-        /// </summary>
-        /// <param name="awsRegionSystemName">AWS region system name.</param>
-        /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
-        /// <param name="songDirectorId">Song director id.</param>
-        /// <returns>The async operation.</returns>
-        [Theory]
-        [InlineData("us-east-2", true, "d9a46d53-3fa6-4ab5-a8a4-612d5f5facda")]
-        public static async Task TryGetByIdAsync_ExistingSongDirector_Succeeds(
-            string awsRegionSystemName, bool useDynamoDBLocal, string songDirectorId)
-        {
-            // Arrange
+        Assert.Equal(expectedRankName, getRankResult.Value?.Name);
+    }
 
-            AggregateSongDirectorRepository aggregateSongDirectorRepository =
-                GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
+    /// <summary>
+    /// Tests getting all song directors.
+    /// </summary>
+    /// <param name="awsRegionSystemName">AWS region system name.</param>
+    /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
+    /// <param name="expectedSongDirectorCount">Expected song director count.</param>
+    /// <returns>The async operation.</returns>
+    [Theory]
+    [InlineData("us-east-2", true, 1)]
+    public static async Task TryGetAllAsync(
+        string awsRegionSystemName,
+        bool useDynamoDBLocal,
+        int expectedSongDirectorCount)
+    {
+        // Arrange
 
-            // Act
+        AggregateSongDirectorRepository aggregateSongDirectorRepository =
+            GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
 
-            Result<SongDirector> getByIdResult = await aggregateSongDirectorRepository
-                .TryGetByIdAsync(songDirectorId)
-                .ConfigureAwait(false);
+        // Act
 
-            // Assert
+        Result<IEnumerable<SongDirector>> getAllResult = await aggregateSongDirectorRepository
+            .TryGetAllAsync()
+            .ConfigureAwait(false);
 
-            Assert.True(getByIdResult.IsSuccess);
-        }
+        // Assert
 
-        /// <summary>
-        /// Tests removing a song director by id.
-        /// </summary>
-        /// <param name="awsRegionSystemName">AWS region system name.</param>
-        /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
-        /// <param name="songDirectorId">Song director id.</param>
-        /// <returns>The async operation.</returns>
-        [Theory]
-        [InlineData("us-east-2", true, "d1a56b38-6380-4420-a443-b647325407fc")]
-        public static async Task TryRemoveByIdAsync_ExistingSongDirector_Succeeds(
-            string awsRegionSystemName, bool useDynamoDBLocal, string songDirectorId)
-        {
-            // Arrange
+        Assert.Equal(expectedSongDirectorCount, getAllResult.Value.Count());
+    }
 
-            AggregateSongDirectorRepository aggregateSongDirectorRepository =
-                GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
+    /// <summary>
+    /// Tests getting a song director by id.
+    /// </summary>
+    /// <param name="awsRegionSystemName">AWS region system name.</param>
+    /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
+    /// <param name="songDirectorId">Song director id.</param>
+    /// <returns>The async operation.</returns>
+    [Theory]
+    [InlineData("us-east-2", true, "d9a46d53-3fa6-4ab5-a8a4-612d5f5facda")]
+    public static async Task TryGetByIdAsync_ExistingSongDirector_Succeeds(
+        string awsRegionSystemName, bool useDynamoDBLocal, string songDirectorId)
+    {
+        // Arrange
 
-            // Act
+        AggregateSongDirectorRepository aggregateSongDirectorRepository =
+            GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
 
-            Result removeByIdResult = await aggregateSongDirectorRepository
-                .TryRemoveByIdAsync(songDirectorId)
-                .ConfigureAwait(false);
+        // Act
 
-            // Assert
+        Result<SongDirector> getByIdResult = await aggregateSongDirectorRepository
+            .TryGetByIdAsync(songDirectorId)
+            .ConfigureAwait(false);
 
-            Assert.True(removeByIdResult.IsSuccess);
-        }
+        // Assert
 
-        /// <summary>
-        /// Tests updating a song director.
-        /// </summary>
-        /// <param name="awsRegionSystemName">AWS region system name.</param>
-        /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
-        /// <param name="songDirectorId">Song director id.</param>
-        /// <param name="fullName">Full name.</param>
-        /// <param name="emailAddress">Email address.</param>
-        /// <param name="phoneNumber">Phone number.</param>
-        /// <param name="rankName">Rank name.</param>
-        /// <param name="isActive">Active indicator.</param>
-        /// <returns>The async operation.</returns>
-        [Theory]
-        [InlineData(
-            "us-east-2",
-            true,
-            "d1a56b38-6380-4420-a443-b647325407fc",
-            "Jane Doe",
-            "jdoe@example.com",
-            "456-789-4567",
-            "Master",
-            false)
-        ]
-        public static async Task TryUpdateAsync_ExistingSongDirector_Succeeds(
-            string awsRegionSystemName,
-            bool useDynamoDBLocal,
-            string songDirectorId,
-            string fullName,
-            string emailAddress,
-            string phoneNumber,
-            string rankName,
-            bool isActive)
-        {
-            // Arrange
+        Assert.True(getByIdResult.IsSuccess);
+    }
 
-            SongDirector songDirector = SongDirector
-                .TryCreate(fullName, emailAddress, phoneNumber, rankName, isActive)
-                .Value;
+    /// <summary>
+    /// Tests removing a song director by id.
+    /// </summary>
+    /// <param name="awsRegionSystemName">AWS region system name.</param>
+    /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
+    /// <param name="songDirectorId">Song director id.</param>
+    /// <returns>The async operation.</returns>
+    [Theory]
+    [InlineData("us-east-2", true, "d1a56b38-6380-4420-a443-b647325407fc")]
+    public static async Task TryRemoveByIdAsync_ExistingSongDirector_Succeeds(
+        string awsRegionSystemName, bool useDynamoDBLocal, string songDirectorId)
+    {
+        // Arrange
 
-            songDirector.UpdateId(songDirectorId);
+        AggregateSongDirectorRepository aggregateSongDirectorRepository =
+            GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
 
-            AggregateSongDirectorRepository aggregateSongDirectorRepository =
-                GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
+        // Act
 
-            // Act
+        Result removeByIdResult = await aggregateSongDirectorRepository
+            .TryRemoveByIdAsync(songDirectorId)
+            .ConfigureAwait(false);
 
-            Result updateResult = await aggregateSongDirectorRepository
-                .TryUpdateAsync(songDirector)
-                .ConfigureAwait(false);
+        // Assert
 
-            // Assert
+        Assert.True(removeByIdResult.IsSuccess);
+    }
 
-            Assert.True(updateResult.IsSuccess);
-        }
+    /// <summary>
+    /// Tests updating a song director.
+    /// </summary>
+    /// <param name="awsRegionSystemName">AWS region system name.</param>
+    /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
+    /// <param name="songDirectorId">Song director id.</param>
+    /// <param name="fullName">Full name.</param>
+    /// <param name="emailAddress">Email address.</param>
+    /// <param name="phoneNumber">Phone number.</param>
+    /// <param name="rankName">Rank name.</param>
+    /// <param name="isActive">Active indicator.</param>
+    /// <returns>The async operation.</returns>
+    [Theory]
+    [InlineData(
+        "us-east-2",
+        true,
+        "d1a56b38-6380-4420-a443-b647325407fc",
+        "Jane Doe",
+        "jdoe@example.com",
+        "456-789-4567",
+        "Master",
+        false)
+    ]
+    public static async Task TryUpdateAsync_ExistingSongDirector_Succeeds(
+        string awsRegionSystemName,
+        bool useDynamoDBLocal,
+        string songDirectorId,
+        string fullName,
+        string emailAddress,
+        string phoneNumber,
+        string rankName,
+        bool isActive)
+    {
+        // Arrange
 
-        /// <summary>
-        /// Gets an <see cref="AggregateSongDirectorRepository"/> for the test.
-        /// </summary>
-        /// <param name="awsRegionSystemName">AWS region system name.</param>
-        /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
-        /// <returns><see cref="AggregateSongDirectorRepository"/>.</returns>
-        private static AggregateSongDirectorRepository GetAggregateSongDirectorRepository(
-            string awsRegionSystemName, bool useDynamoDBLocal)
-        {
-            ConfigurationBuilder builder = new();
+        SongDirector songDirector = SongDirector
+            .TryCreate(fullName, emailAddress, phoneNumber, rankName, isActive)
+            .Value;
 
-            builder.AddUserSecrets<AggregateSongDirectorRepositoryTests>();
+        songDirector.UpdateId(songDirectorId);
 
-            IConfiguration configuration = builder.Build();
+        AggregateSongDirectorRepository aggregateSongDirectorRepository =
+            GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
 
-            AzureAdb2cConfiguration azureAdb2CConfiguration = new(
-                configuration["AzureAdb2c:ClientId"],
-                configuration["AzureAdb2c:ClientSecret"],
-                configuration["AzureAdb2c:Domain"],
-                configuration["AzureAdb2c:ExtensionsAppClientId"],
-                configuration["AzureAdb2c:TenantId"]);
+        // Act
 
-            AzureAdb2cSongDirectorRepository azureAdb2CSongDirectorRepository = new(
-                azureAdb2CConfiguration);
+        Result updateResult = await aggregateSongDirectorRepository
+            .TryUpdateAsync(songDirector)
+            .ConfigureAwait(false);
 
-            DynamoDBConfiguration dynamoDBConfiguration = new(
-                configuration["DynamoDB:AwsAccessKeyId"],
-                configuration["DynamoDB:AwsSecretAccessKey"],
-                awsRegionSystemName,
-                configuration["DynamoDB:DynamoDBLocalUrl"],
-                useDynamoDBLocal);
+        // Assert
 
-            DynamoDBSongDirectorRepository amazonDynamoDBSongDirectorRepository = new(
-                dynamoDBConfiguration);
+        Assert.True(updateResult.IsSuccess);
+    }
 
-            return new(
-                new ISongDirectorRepositoryFragment[]
-                {
-                    azureAdb2CSongDirectorRepository,
-                    amazonDynamoDBSongDirectorRepository,
-                });
-        }
+    /// <summary>
+    /// Gets an <see cref="AggregateSongDirectorRepository"/> for the test.
+    /// </summary>
+    /// <param name="awsRegionSystemName">AWS region system name.</param>
+    /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
+    /// <returns><see cref="AggregateSongDirectorRepository"/>.</returns>
+    private static AggregateSongDirectorRepository GetAggregateSongDirectorRepository(
+        string awsRegionSystemName, bool useDynamoDBLocal)
+    {
+        ConfigurationBuilder builder = new();
+
+        builder.AddUserSecrets<AggregateSongDirectorRepositoryTests>();
+
+        IConfiguration configuration = builder.Build();
+
+        AzureAdb2cConfiguration azureAdb2CConfiguration = new(
+            configuration["AzureAdb2c:ClientId"],
+            configuration["AzureAdb2c:ClientSecret"],
+            configuration["AzureAdb2c:Domain"],
+            configuration["AzureAdb2c:ExtensionsAppClientId"],
+            configuration["AzureAdb2c:TenantId"]);
+
+        AzureAdb2cSongDirectorRepository azureAdb2CSongDirectorRepository = new(
+            azureAdb2CConfiguration);
+
+        DynamoDBConfiguration dynamoDBConfiguration = new(
+            configuration["DynamoDB:AwsAccessKeyId"],
+            configuration["DynamoDB:AwsSecretAccessKey"],
+            awsRegionSystemName,
+            configuration["DynamoDB:DynamoDBLocalUrl"],
+            useDynamoDBLocal);
+
+        DynamoDBSongDirectorRepository amazonDynamoDBSongDirectorRepository = new(
+            dynamoDBConfiguration);
+
+        return new(
+            new ISongDirectorRepositoryFragment[]
+            {
+                azureAdb2CSongDirectorRepository,
+                amazonDynamoDBSongDirectorRepository,
+            });
     }
 }

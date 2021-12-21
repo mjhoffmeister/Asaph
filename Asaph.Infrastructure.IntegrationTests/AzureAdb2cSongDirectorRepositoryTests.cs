@@ -116,7 +116,7 @@ namespace Asaph.Infrastructure.IntegrationTests
         /// <param name="songDirectorId">Song director id.</param>
         /// <returns>The async operation.</returns>
         [Theory]
-        [InlineData("2b222a23-cfa0-46de-887f-df6e0b060611")]
+        [InlineData("d7a068f8-461d-42f2-a561-5ea2f843c2b3")]
         public static async Task TryGetByIdAsync_ExistingSongDirector_Succeeds(
             string songDirectorId)
         {

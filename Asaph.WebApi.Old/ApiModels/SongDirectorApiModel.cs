@@ -3,10 +3,18 @@ using Hydra.NET;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 
-internal class SongDirectorApiModel
+namespace Asaph.WebApi.ApiModels;
+
+/// <summary>
+/// Song director API model.
+/// </summary>
+public class SongDirectorApiModel
 {
     /// <summary>
     /// Context.
@@ -183,70 +191,6 @@ internal class SongDirectorApiModel
         // Initialize song director properties
         Dictionary<string, OpenApiSchema> songDirectorProperties = new()
         {
-            ["name"] = new OpenApiSchema
-            {
-                Title = "Name",
-                Type = "string",
-            },
-            ["emailAddress"] = new OpenApiSchema
-            {
-                Title = "Email address",
-                Type = "string",
-            },
-            ["phoneNumber"] = new OpenApiSchema
-            {
-                Title = "Phone number",
-                Type = "string",
-            },
-        };
-
-        // Add rank if the user is a grandmaster song director
-        if (user.IsGrandmasterSongDirector())
-        {
-            songDirectorProperties.Add("rank", new OpenApiSchema
-            {
-                Title = "Rank",
-                Type = "string",
-                Enum = new List<IOpenApiAny>(
-                    Roles.GetSongDirectorRankNames().Select(rank => new OpenApiString(rank))),
-            });
-        }
-
-        // Add the remaining properties
-        songDirectorProperties.Add("isActive", new OpenApiSchema
-        {
-            Title = "Active",
-            Type = "boolean",
-        });
-
-        // Create and return the song director schema
-        return new()
-        {
-            Required = new SortedSet<string>(new[]
-            {
-                "name",
-                "emailAddress",
-                "isActive",
-            }),
-            Properties = songDirectorProperties,
-        };
-    }
-
-    /// <summary>
-    /// Gets the OpenAPI schema for a song director.
-    /// </summary>
-    /// <param name="user">User making the request.</param>
-    /// <returns><see cref="OpenApiSchema"/>.</returns>
-    public static OpenApiSchema GetJsonLDSchema(ClaimsPrincipal user)
-    {
-        // Initialize song director properties
-        Dictionary<string, OpenApiSchema> songDirectorProperties = new()
-        {
-            ["@id"] = new OpenApiSchema
-            {
-                Title = "Id",
-                Type = "string",
-            },
             ["name"] = new OpenApiSchema
             {
                 Title = "Name",

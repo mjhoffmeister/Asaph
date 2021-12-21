@@ -54,7 +54,8 @@ public class DynamoDBSongDirectorRepository : ISongDirectorRepositoryFragment
         };
 
     /// <inheritdoc/>
-    public async Task<Result<SongDirectorDataModel>> TryAddAsync(SongDirectorDataModel songDirectorDataModel)
+    public async Task<Result<SongDirectorDataModel>> TryAddAsync(
+        SongDirectorDataModel songDirectorDataModel)
     {
         // Return an error response if id isn't set
         if (songDirectorDataModel.Id == null)
@@ -101,6 +102,7 @@ public class DynamoDBSongDirectorRepository : ISongDirectorRepositoryFragment
     public async Task<Result<TProperty>> TryFindPropertyByIdAsync<TProperty>(
         string id, string propertyName)
     {
+        // Build the request for finding the property
         QueryRequest findPropertyRequest = new()
         {
             TableName = _songDirectorTableName,
@@ -112,19 +114,30 @@ public class DynamoDBSongDirectorRepository : ISongDirectorRepositoryFragment
             ProjectionExpression = propertyName,
         };
 
+        // Query the database
         QueryResponse? response = await _dynamoDBClient
             .QueryAsync(findPropertyRequest)
             .ConfigureAwait(false);
 
+        // Return a failure response if the song director wasn't found
         if (response == null || response?.Items.Count == 0)
         {
             return Result.Fail($"Could not find {propertyName} property for a song director" +
-                $"with id {id}.");
+                $"with id {id}. Song director not found.");
         }
 
-        return response!.Items
-            .First()[propertyName]
-            .TryGetValue<TProperty>();
+        // Convert items to a dictionary to help with checking for the property
+        Dictionary<string, AttributeValue> values = new(response!.Items.First());
+
+        // Return a failure response if the property wasn't found
+        if (!values.TryGetValue(propertyName, out AttributeValue? value))
+        {
+            return Result.Fail(
+                $"Song director with id {id} doesn't have a {propertyName} property.");
+        }
+
+        // Return the value
+        return value.TryGetValue<TProperty>();
     }
 
     /// <inheritdoc/>

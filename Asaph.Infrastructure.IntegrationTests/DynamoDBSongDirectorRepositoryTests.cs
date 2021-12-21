@@ -1,4 +1,5 @@
-﻿using Asaph.Infrastructure.SongDirectorRepository;
+﻿using Asaph.Core.Domain.SongDirectorAggregate;
+using Asaph.Infrastructure.SongDirectorRepository;
 using FluentResults;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace Asaph.Infrastructure.IntegrationTests
         /// <param name="isActive">Is active indicator to add.</param>
         /// <returns>The async operation.</returns>
         [Theory]
-        [InlineData("us-east-2", true, "7d89b90d-0df2-4483-b3d2-693be3c00a9d", true)]
+        [InlineData("us-east-2", true, "d7a068f8-461d-42f2-a561-5ea2f843c2b3", true)]
         public static async Task TryAddAsync_ValidSongDirector_Succeeds(
             string awsRegionSystemName, bool useDynamoDBLocal, string songDirectorId, bool isActive)
         {
@@ -57,6 +58,36 @@ namespace Asaph.Infrastructure.IntegrationTests
         }
 
         /// <summary>
+        /// Tests getting rank for a song director.
+        /// </summary>
+        /// <param name="awsRegionSystemName">AWS region system name.</param>
+        /// <param name="useDynamoDBLocal">Indicates whether or not to use Dynamo DB local.</param>
+        /// <param name="songDirectorId">Song director id.</param>
+        /// <returns>The async operation.</returns>
+        [Theory]
+        [InlineData("us-east-2", true, "5144f766-dae4-45f1-9f1a-dc52070e6910")]
+        public static async Task TryFindPropertyByIdAsync_Rank_ReturnsFailedResult(
+            string awsRegionSystemName, bool useDynamoDBLocal, string songDirectorId)
+        {
+            // Arrange
+
+            string propertyName = "RankName";
+
+            DynamoDBSongDirectorRepository dynamoDBSongDirectorRepository = new(
+                GetConfiguration(awsRegionSystemName, useDynamoDBLocal));
+
+            // Act
+
+            Result<Rank?> getRankResult = await dynamoDBSongDirectorRepository
+                .TryFindPropertyByIdAsync<Rank?>(songDirectorId, propertyName)
+                .ConfigureAwait(false);
+
+            // Assert
+
+            Assert.True(getRankResult.IsFailed);
+        }
+
+        /// <summary>
         /// Tests getting all song directors in Dynamo DB.
         /// </summary>
         /// <param name="awsRegionSystemName">AWS region system name.</param>
@@ -64,7 +95,7 @@ namespace Asaph.Infrastructure.IntegrationTests
         /// <param name="expectedSongDirectorDataModelCount">Expected song director count.</param>
         /// <returns>The async operation.</returns>
         [Theory]
-        [InlineData("us-east-2", true, 1)]
+        [InlineData("us-east-2", true, 2)]
         public static async Task TryGetAllAsync(
             string awsRegionSystemName,
             bool useDynamoDBLocal,
