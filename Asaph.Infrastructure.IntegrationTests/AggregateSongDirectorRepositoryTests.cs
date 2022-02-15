@@ -114,13 +114,13 @@ public class AggregateSongDirectorRepositoryTests
 
     /// <summary>
     /// Tests getting all song directors.
-    /// </summary>
+    /// </summary> 
     /// <param name="awsRegionSystemName">AWS region system name.</param>
     /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
     /// <param name="expectedSongDirectorCount">Expected song director count.</param>
     /// <returns>The async operation.</returns>
     [Theory]
-    [InlineData("us-east-2", true, 1)]
+    [InlineData("us-east-2", false, 1)]
     public static async Task TryGetAllAsync(
         string awsRegionSystemName,
         bool useDynamoDBLocal,

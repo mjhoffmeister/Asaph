@@ -2,6 +2,7 @@ using Asaph.Bootstrapper;
 using Asaph.Core.UseCases;
 using Asaph.Core.UseCases.AddSongDirector;
 using Asaph.Core.UseCases.GetSongDirectors;
+using Asaph.WebApi.GcpSecretManagerConfigurationProvider;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi;
@@ -10,7 +11,10 @@ using Microsoft.OpenApi.Models;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddGcpSecretManager(builder.Configuration);
+
 string baseUri = builder.Configuration["BaseUri"];
+
 string hydraContextUri = builder.Configuration["HydraContextUri"];
 
 string songDirectorsBaseUri = @$"{baseUri.TrimEnd('/')}/song-directors/";
