@@ -91,7 +91,7 @@ namespace Asaph.Infrastructure.IntegrationTests
         /// <param name="expectedSongDirectorDataModelCount">Expected song director count.</param>
         /// <returns>The async operation.</returns>
         [Theory]
-        [InlineData(2)]
+        [InlineData(1)]
         public static async Task TryGetAllAsync_ExistingSongDirectors_ReturnsExpectedCount(
             int expectedSongDirectorDataModelCount)
         {
