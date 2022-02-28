@@ -1,6 +1,7 @@
 ﻿using Asaph.Core.Domain.SongAggregate;
 using FluentResults;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Asaph.Core.UnitTests.Domain
@@ -14,25 +15,33 @@ namespace Asaph.Core.UnitTests.Domain
         /// Tests creating songs.
         /// </summary>
         /// <param name="name">Name.</param>
-        /// <param name="key">Key.</param>
+        /// <param name="keyString">Key.</param>
         /// <param name="startingPitch">Starting pitch.</param>
         /// <param name="endingPitch">Ending pitch.</param>
         /// <param name="beatsPerMinute">Beats per minute.</param>
         /// <param name="themesString">Themes.</param>
-        /// <exception cref="NotImplementedException">
-        /// Throws because the test is not yet implemented.
-        /// </exception>
         [Theory]
-        [InlineData("It Is Well with My Soul", "D♭", "A♭5", "D♭5", 84, "Forgiveness,Peace")]
-        public static void TryCreate_Multiple_ReturnsExepectedIsSuccess(
+        [InlineData("It Is Well with My Soul", "D♭ major", "A♭5", "D♭5", 84, "Forgiveness,Peace")]
+        public static void TryCreate_Multiple_ReturnsExpectedIsSuccess(
             string name,
-            string key,
+            string keyString,
             string? startingPitch,
             string? endingPitch,
             int? beatsPerMinute,
             string? themesString)
         {
-            throw new NotImplementedException();
+            // Arrange
+
+            IEnumerable<string>? themes = themesString?.Split(',');
+
+            // Act
+
+            Result<Song> createSongResult = Song.TryCreate(
+                name, keyString, startingPitch, endingPitch, beatsPerMinute, themes);
+
+            // Assert
+
+            Assert.True(createSongResult.IsSuccess);
         }
 
         /// <summary>
