@@ -1,0 +1,56 @@
+name: 'Deploy to GCP Cloud Run'
+
+on:
+  #push:
+  #  branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  job_id:
+    runs-on: ubuntu-latest
+    
+    env:
+      IMAGE_NAME: 'gcr.io/${{secrets.PROJECT_ID}}/${{secrets.APP_NAME}}'
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: 'Checkout repository'
+      uses: actions/checkout@v2
+
+    - name: 'Setup .NET (for testing)'
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: 'Restore dependencies (for testing)'
+      run: dotnet restore
+
+    - name: 'Build (for testing)'
+      run: dotnet build --no-restore
+      
+    - name: 'Run unit tests'
+      run: dotnet test --no-build --verbosity normal --Filter FullyQualifiedName~UnitTests
+
+    - id: 'auth'
+      name: 'Authenticate to GCP'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        workload_identity_provider: ${{secrets.WORKLOAD_IDENTITY_PROVIDER}}
+        service_account: ${{secrets.SERVICE_ACCOUNT}}
+
+    - name: 'Configure Docker'
+      run: gcloud auth configure-docker --quiet
+
+    - name: 'Build Docker image'
+      run: docker build . -t $IMAGE_NAME
+
+    - name: 'Push Docker image'
+      run: docker push $IMAGE_NAME
+
+    - name: Deploy Docker image
+      run: gcloud run deploy ${{ secrets.PROJECT_ID }} --image $IMAGE_NAME --region us-central1 --platform managed
