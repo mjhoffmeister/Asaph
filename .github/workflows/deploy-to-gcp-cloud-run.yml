@@ -9,6 +9,7 @@ on:
 
 jobs:
   job_id:
+    environment: dev
     runs-on: ubuntu-latest
     
     env:
