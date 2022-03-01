@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      IMAGE_NAME: 'gcr.io/${{secrets.PROJECT_ID}}/${{secrets.APP_NAME}}'
+      IMAGE_NAME: 'gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.APP_NAME }}'
 
     permissions:
       contents: 'read'
@@ -40,8 +40,8 @@ jobs:
       name: 'Authenticate to GCP'
       uses: 'google-github-actions/auth@v0'
       with:
-        workload_identity_provider: ${{secrets.WORKLOAD_IDENTITY_PROVIDER}}
-        service_account: ${{secrets.SERVICE_ACCOUNT}}
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
     - name: 'Configure Docker'
       run: gcloud auth configure-docker --quiet
