@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      IMAGE_NAME: 'gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.APP_NAME }}:latest'
+      IMAGE_NAME: 'gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.APP_NAME }}'
 
     permissions:
       contents: 'read'
