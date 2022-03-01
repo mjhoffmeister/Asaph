@@ -114,7 +114,7 @@ public class AggregateSongDirectorRepositoryTests
 
     /// <summary>
     /// Tests getting all song directors.
-    /// </summary> 
+    /// </summary>
     /// <param name="awsRegionSystemName">AWS region system name.</param>
     /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
     /// <param name="expectedSongDirectorCount">Expected song director count.</param>
