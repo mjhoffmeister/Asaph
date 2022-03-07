@@ -13,7 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      IMAGE_NAME: '${{ secrets.AR_REGION_HOSTNAME }}/${{ secrets.PROJECT_ID }}/${{ secrets.AR_REPO_NAME }}/${{ secrets.APP_NAME }}'
+      IMAGE_NAME: 'gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.APP_NAME }}'
+      # TODO: figure out why pushes to Artifact Registry don't work
+      #IMAGE_NAME: '${{ secrets.AR_REGION_HOSTNAME }}/${{ secrets.PROJECT_ID }}/${{ secrets.AR_REPO_NAME }}/${{ secrets.APP_NAME }}'
 
     permissions:
       contents: 'read'
@@ -45,7 +47,9 @@ jobs:
         service_account: '${{ secrets.SERVICE_ACCOUNT }}'
 
     - name: 'Configure Docker'
-      run: gcloud auth configure-docker ${{ secrets.AR_REGION_HOSTNAME }} --quiet
+      run: gcloud auth configure-docker --quiet
+      # TODO: figure out why pushes to Artifact Registry don't work
+      #run: gcloud auth configure-docker ${{ secrets.AR_REGION_HOSTNAME }} --quiet
 
     - name: 'Build Docker image'
       run: docker build . -t $IMAGE_NAME
