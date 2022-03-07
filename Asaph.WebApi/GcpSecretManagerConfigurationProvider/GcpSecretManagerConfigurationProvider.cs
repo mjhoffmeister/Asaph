@@ -44,6 +44,8 @@ public class GcpSecretManagerConfigurationProvider : ConfigurationProvider
         if (secretNames?.Any() == false)
             return;
 
+        Console.WriteLine($"Retrieved {secretNames!.Count()} secrets from Secret Manager.");
+
         foreach (SecretName secretName in secretNames!)
         {
             try
