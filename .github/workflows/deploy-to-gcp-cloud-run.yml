@@ -45,7 +45,7 @@ jobs:
         service_account: '${{ secrets.SERVICE_ACCOUNT }}'
 
     - name: 'Configure Docker'
-      run: gcloud auth configure-docker ${{ secrets.AR_REPO_HOSTNAME }} --quiet
+      run: gcloud auth configure-docker ${{ secrets.AR_REGION_HOSTNAME }} --quiet
 
     - name: 'Build Docker image'
       run: docker build . -t $IMAGE_NAME
