@@ -14,6 +14,8 @@ jobs:
     
     env:
       IMAGE_NAME: 'gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.APP_NAME }}'
+      # TODO: figure out why pushes to Artifact Registry don't work
+      #IMAGE_NAME: '${{ secrets.AR_REGION_HOSTNAME }}/${{ secrets.PROJECT_ID }}/${{ secrets.AR_REPO_NAME }}/${{ secrets.APP_NAME }}'
 
     permissions:
       contents: 'read'
@@ -46,12 +48,14 @@ jobs:
 
     - name: 'Configure Docker'
       run: gcloud auth configure-docker --quiet
+      # TODO: figure out why pushes to Artifact Registry don't work
+      #run: gcloud auth configure-docker ${{ secrets.AR_REGION_HOSTNAME }} --quiet
 
     - name: 'Build Docker image'
-      run: docker build ./Asaph.WebApi -t $IMAGE_NAME
+      run: docker build . -t $IMAGE_NAME
 
     - name: 'Push Docker image'
       run: docker push $IMAGE_NAME
 
     - name: Deploy Docker image
-      run: gcloud run deploy ${{ secrets.PROJECT_ID }} --image $IMAGE_NAME --region us-central1 --platform managed
+      run: gcloud run deploy ${{ secrets.APP_NAME }} --image $IMAGE_NAME --region us-central1 --platform managed
