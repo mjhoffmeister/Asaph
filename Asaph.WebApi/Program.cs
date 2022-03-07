@@ -94,6 +94,10 @@ app.MapGet(
             .ConfigureAwait(false);
     });
 
+string? port;
+
+string? url = null;
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -107,5 +111,10 @@ if (app.Environment.IsDevelopment())
         options.OAuthUsePkce();
     });
 }
+else
+{
+    port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+    url = $"http://0.0.0.0:{port}";
+}
 
-app.Run();
+app.Run(url);
