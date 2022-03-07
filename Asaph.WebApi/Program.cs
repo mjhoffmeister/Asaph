@@ -45,6 +45,9 @@ app.UseAuthorization();
 // Set the API documentation path
 string apiDocumentationPath = "/api-docs/current/openapi.json";
 
+// Redirect the base URL to API documentation
+app.MapGet("/", () => Results.Redirect(apiDocumentationPath));
+
 // Set up REST API for getting API documentation
 app.MapGet(
     apiDocumentationPath,
@@ -64,7 +67,7 @@ app.MapPost(
     "/song-directors",
     [Authorize] async (
         AddSongDirectorRequest addSongDirectorRequest,
-        IAsyncUseCaseInteractor<AddSongDirectorRequest, IResult> addSongDirectorInteractor) => 
+        IAsyncUseCaseInteractor<AddSongDirectorRequest, IResult> addSongDirectorInteractor) =>
 {
     return await addSongDirectorInteractor
             .HandleAsync(addSongDirectorRequest)
@@ -95,7 +98,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 
-    app.UseSwaggerUI(options => 
+    app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint($"{baseUri}{apiDocumentationPath}", "Asaph API");
 

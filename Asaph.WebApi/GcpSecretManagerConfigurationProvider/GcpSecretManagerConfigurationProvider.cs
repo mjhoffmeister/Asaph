@@ -9,8 +9,8 @@ namespace Asaph.WebApi.GcpSecretManagerConfigurationProvider;
 /// </summary>
 public class GcpSecretManagerConfigurationProvider : ConfigurationProvider
 {
-    private readonly SecretManagerServiceClient _client;
-    private readonly string _projectId;
+    private readonly SecretManagerServiceClient? _client;
+    private readonly string? _projectId;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GcpSecretManagerConfigurationProvider"/> class.
@@ -28,7 +28,14 @@ public class GcpSecretManagerConfigurationProvider : ConfigurationProvider
         }
         else
         {
-            _client = SecretManagerServiceClient.Create();
+            try
+            {
+                _client = SecretManagerServiceClient.Create();
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         _projectId = string.IsNullOrWhiteSpace(projectId) ? GetGcpProjectId() : projectId;
@@ -37,7 +44,10 @@ public class GcpSecretManagerConfigurationProvider : ConfigurationProvider
     /// <inheritdoc/>
     public override void Load()
     {
-        IEnumerable<SecretName>? secretNames = _client
+        if (_projectId == null)
+            return;
+
+        IEnumerable<SecretName>? secretNames = _client?
             .ListSecrets(new ProjectName(_projectId))?
             .Select(i => i.SecretName);
 
@@ -53,7 +63,7 @@ public class GcpSecretManagerConfigurationProvider : ConfigurationProvider
                 SecretVersionName secretVersionName = new(
                     secretName.ProjectId, secretName.SecretId, "latest");
 
-                AccessSecretVersionResponse secretVersion = _client
+                AccessSecretVersionResponse? secretVersion = _client!
                     .AccessSecretVersion(secretVersionName);
 
                 Set(
@@ -71,18 +81,13 @@ public class GcpSecretManagerConfigurationProvider : ConfigurationProvider
     /// Gets the GCP project id from the execution platform.
     /// </summary>
     /// <returns>Project id.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if GCP execution platform information couldn't be retrieved. This is most likely due
-    /// to the service not running on GCP (e.g. local testing.)
-    /// </exception>
-    private static string GetGcpProjectId()
+    private static string? GetGcpProjectId()
     {
         string? projectId = Platform.Instance()?.ProjectId;
 
         if (projectId == null)
         {
-            throw new InvalidOperationException(
-                "Could not retrieve GCP project id for GcpSecretManagerProvider.");
+            Console.WriteLine("Could not retrieve project id from GCP.");
         }
 
         return projectId;
