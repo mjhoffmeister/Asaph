@@ -13,6 +13,8 @@ WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddGcpSecretManager(builder.Configuration);
 
+builder.Configuration.AddEnvironmentVariables();
+
 string baseUri = builder.Configuration["BaseUri"];
 
 string hydraContextUri = builder.Configuration["HydraContextUri"];
@@ -102,6 +104,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 
+    // TODO: add enable swagger environment variable
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint($"{baseUri}{apiDocumentationPath}", "Asaph API");

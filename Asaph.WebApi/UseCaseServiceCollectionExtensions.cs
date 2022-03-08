@@ -5,7 +5,7 @@ using Asaph.Core.UseCases.GetSongDirectors;
 /// <summary>
 /// Use case service collection extensions.
 /// </summary>
-static internal class UseCaseServiceCollectionExtensions
+internal static class UseCaseServiceCollectionExtensions
 {
     /// <summary>
     /// Adds the Add Song Director use case.
@@ -20,7 +20,7 @@ static internal class UseCaseServiceCollectionExtensions
         return services
             .AddTransient<
                 IAddSongDirectorBoundary<IResult>,
-                AddSongDirectorApiBoundary>(factory => new(new(resourceBaseUri, hydraContextUri)))
+                AddSongDirectorApiBoundary>(factory => new(new(hydraContextUri, resourceBaseUri)))
             .AddTransient<
                 IAsyncUseCaseInteractor<AddSongDirectorRequest, IResult>,
                 AddSongDirectorInteractor<IResult>>();
@@ -45,4 +45,3 @@ static internal class UseCaseServiceCollectionExtensions
                 GetSongDirectorsInteractor<IResult>>();
     }
 }
-

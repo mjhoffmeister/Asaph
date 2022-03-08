@@ -18,12 +18,13 @@ internal class GetSongDirectorsApiBoundary : ApiBoundary, IGetSongDirectorsBound
 
     /// <inheritdoc/>
     public IResult FailedToGetSongDirectors(GetSongDirectorsResponse response) =>
-        new BadGatewayObjectResult(new Status(
+        new BadGatewayObjectResult(
+            new Status(
             HydraContext,
             (int)HttpStatusCode.BadGateway,
             "Bad Gateway",
             response.Message),
-        "application/ld+json");
+            "application/ld+json");
 
     /// <inheritdoc/>
     public IResult InvalidRequesterEmailAddress(GetSongDirectorsResponse response) =>
@@ -33,8 +34,8 @@ internal class GetSongDirectorsApiBoundary : ApiBoundary, IGetSongDirectorsBound
             "Bad Request",
             response.Message));
 
-    // TODO: Create UnathorizedObjectResult
     /// <inheritdoc/>
+    // TODO: Create UnauthorizedObjectResult
     public IResult RequesterSongDirectorRankNotFound(GetSongDirectorsResponse response) =>
         Results.Unauthorized();
 
