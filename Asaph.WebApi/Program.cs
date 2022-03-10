@@ -21,6 +21,8 @@ string hydraContextUri = builder.Configuration["HydraContextUri"];
 
 string songDirectorsBaseUri = @$"{baseUri.TrimEnd('/')}/song-directors/";
 
+builder.Services.AddCors();
+
 // Add Asaph services and use cases
 builder.Services
     .AddAsaphServices(builder.Configuration)
@@ -40,7 +42,11 @@ builder.Services.AddAuthorization(options =>
 
 WebApplication? app = builder.Build();
 
-app.UseCors();
+app.UseCors(c => c
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true)
+    .AllowCredentials());
 
 app.UseAuthentication();
 
