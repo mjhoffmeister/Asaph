@@ -122,6 +122,7 @@ internal class SongDirectorApiModel
                     Tags = GetOpenApiTags(),
                 },
             },
+            Summary = "Song directors",
         };
 
         if (user.IsGrandmasterSongDirector())
