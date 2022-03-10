@@ -40,6 +40,8 @@ builder.Services.AddAuthorization(options =>
 
 WebApplication? app = builder.Build();
 
+app.UseCors();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
