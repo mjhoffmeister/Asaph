@@ -42,9 +42,12 @@ builder.Services.AddAuthorization(options =>
 
 WebApplication? app = builder.Build();
 
+string[] allowedOrigins = builder.Configuration["Cors:AllowedOrigins"].Split(',');
+
 app.UseCors(c => c
     .AllowAnyMethod()
     .AllowAnyHeader()
+    .WithOrigins(allowedOrigins)
     .SetIsOriginAllowed(origin => true)
     .AllowCredentials());
 
