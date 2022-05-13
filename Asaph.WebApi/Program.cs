@@ -82,6 +82,13 @@ app.MapPost(
         AddSongDirectorRequest addSongDirectorRequest,
         IAsyncUseCaseInteractor<AddSongDirectorRequest, IResult> addSongDirectorInteractor) =>
 {
+    string? requesterId = http.User.GetNameIdentifierId();
+
+    if (requesterId == null)
+        return Results.Unauthorized();
+
+    addSongDirectorRequest.RequesterId = requesterId;
+
     return await addSongDirectorInteractor
             .HandleAsync(addSongDirectorRequest)
             .ConfigureAwait(false);
