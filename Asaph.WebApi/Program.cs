@@ -79,7 +79,8 @@ app.MapGet(
 app.MapPost(
     "/song-directors",
     [Authorize] async (
-        AddSongDirectorRequest addSongDirectorRequest,
+        HttpContext http,
+        SongDirectorApiModel newSongDirector,
         IAsyncUseCaseInteractor<AddSongDirectorRequest, IResult> addSongDirectorInteractor) =>
 {
     string? requesterId = http.User.GetNameIdentifierId();
@@ -87,7 +88,13 @@ app.MapPost(
     if (requesterId == null)
         return Results.Unauthorized();
 
-    addSongDirectorRequest.RequesterId = requesterId;
+    AddSongDirectorRequest addSongDirectorRequest = new(
+        requesterId,
+        newSongDirector.Name,
+        newSongDirector.EmailAddress,
+        newSongDirector.PhoneNumber,
+        newSongDirector.Rank,
+        newSongDirector.IsActive);
 
     return await addSongDirectorInteractor
             .HandleAsync(addSongDirectorRequest)
