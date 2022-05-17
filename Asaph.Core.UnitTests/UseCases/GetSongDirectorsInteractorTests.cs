@@ -33,7 +33,7 @@ namespace Asaph.Core.UnitTests.UseCases
             GetSongDirectorsRequest request = new(requesterId);
 
             GetSongDirectorsInteractor<GetSongDirectorsResponse> getSongDirectorsInteractor = new(
-                GetMockSongDirectorRepository(), new GetSongDirectorsDefaultBoundary());
+                GetMockSongDirectorRepository(), new GetSongDirectorsTestBoundary());
 
             // Act
 
@@ -82,7 +82,7 @@ namespace Asaph.Core.UnitTests.UseCases
             GetSongDirectorsRequest request = new(requesterId);
 
             GetSongDirectorsInteractor<GetSongDirectorsResponse> getSongDirectorsInteractor = new(
-                GetMockSongDirectorRepository(), new GetSongDirectorsDefaultBoundary());
+                GetMockSongDirectorRepository(), new GetSongDirectorsTestBoundary());
 
             // Act
 
@@ -134,7 +134,7 @@ namespace Asaph.Core.UnitTests.UseCases
             GetSongDirectorsRequest request = new(requesterId);
 
             GetSongDirectorsInteractor<GetSongDirectorsResponse> getSongDirectorsInteractor = new(
-                GetMockSongDirectorRepository(), new GetSongDirectorsDefaultBoundary());
+                GetMockSongDirectorRepository(), new GetSongDirectorsTestBoundary());
 
             // Act
 

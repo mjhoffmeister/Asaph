@@ -1,9 +1,18 @@
-﻿namespace Asaph.Core.Domain
-{
-    public abstract class Entity
-    {
-        public string? Id { get; private set; }
+﻿namespace Asaph.Core.Domain;
 
-        public void UpdateId(string? id) => Id = id;
-    }
+/// <summary>
+/// Entity base class.
+/// </summary>
+public abstract class Entity
+{
+    /// <summary>
+    /// Id.
+    /// </summary>
+    public string? Id { get; private set; }
+
+    /// <summary>
+    /// Updates the identity's id.
+    /// </summary>
+    /// <param name="id">Id.</param>
+    public void UpdateId(string? id) => Id = id;
 }

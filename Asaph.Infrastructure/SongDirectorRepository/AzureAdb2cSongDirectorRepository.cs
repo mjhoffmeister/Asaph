@@ -305,8 +305,7 @@ public class AzureAdb2cSongDirectorRepository : ISongDirectorRepositoryFragment
     /// </summary>
     /// <param name="propertyName">Property name.</param>
     /// <returns>
-    /// The select string for the property, or null if the property isn't stored in Azure AD
-    /// B2C.
+    /// The select string for the property, or null if the property isn't stored in Azure AD B2C.
     /// </returns>
     private string? GetSelectString(string propertyName) =>
         propertyName switch

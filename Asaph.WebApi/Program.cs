@@ -2,6 +2,7 @@ using Asaph.Bootstrapper;
 using Asaph.Core.UseCases;
 using Asaph.Core.UseCases.AddSongDirector;
 using Asaph.Core.UseCases.GetSongDirectors;
+using Asaph.Core.UseCases.RemoveSongDirector;
 using Asaph.WebApi.GcpSecretManagerConfigurationProvider;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
@@ -20,6 +21,8 @@ string baseUri = builder.Configuration["BaseUri"];
 string hydraContextUri = builder.Configuration["HydraContextUri"];
 
 string songDirectorsBaseUri = @$"{baseUri.TrimEnd('/')}/song-directors/";
+
+builder.Logging.AddConsole();
 
 builder.Services.AddCors();
 
@@ -75,36 +78,31 @@ app.MapGet(
         return Results.Content(json, "application/json");
     });
 
-// Set up REST API for adding song directors
-app.MapPost(
-    "/song-directors",
-    [Authorize] async (
+app.MapDelete(
+    "/song-directors/{id}",
+    [Authorize]
+    async (
+        string id,
         HttpContext http,
-        SongDirectorApiModel newSongDirector,
-        IAsyncUseCaseInteractor<AddSongDirectorRequest, IResult> addSongDirectorInteractor) =>
-{
-    string? requesterId = http.User.GetNameIdentifierId();
+        IAsyncUseCaseInteractor<RemoveSongDirectorRequest, IResult> removeSongDirectorInteractor) =>
+        {
+            string? requesterId = http.User.GetNameIdentifierId();
 
-    if (requesterId == null)
-        return Results.Unauthorized();
+            if (requesterId == null || !http.User.IsGrandmasterSongDirector())
+                return Results.Unauthorized();
 
-    AddSongDirectorRequest addSongDirectorRequest = new(
-        requesterId,
-        newSongDirector.Name,
-        newSongDirector.EmailAddress,
-        newSongDirector.PhoneNumber,
-        newSongDirector.Rank,
-        newSongDirector.IsActive);
+            RemoveSongDirectorRequest removeSongDirectorRequest = new(requesterId, id);
 
-    return await addSongDirectorInteractor
-            .HandleAsync(addSongDirectorRequest)
-            .ConfigureAwait(false);
-});
+            return await removeSongDirectorInteractor
+                .HandleAsync(removeSongDirectorRequest)
+                .ConfigureAwait(false);
+        });
 
 // Set up REST API for getting song directors
 app.MapGet(
     "/song-directors",
-    [Authorize] async (
+    [Authorize]
+    async (
         HttpContext http,
         IAsyncUseCaseInteractor<
             GetSongDirectorsRequest, IResult> getSongDirectorsInteractor) =>
@@ -118,6 +116,33 @@ app.MapGet(
 
         return await getSongDirectorsInteractor
             .HandleAsync(getSongDirectorsRequest)
+            .ConfigureAwait(false);
+    });
+
+// Set up REST API for adding song directors
+app.MapPost(
+    "/song-directors",
+    [Authorize]
+    async (
+        SongDirectorApiModel newSongDirector,
+        HttpContext http,
+        IAsyncUseCaseInteractor<AddSongDirectorRequest, IResult> addSongDirectorInteractor) =>
+    {
+        string? requesterId = http.User.GetNameIdentifierId();
+
+        if (requesterId == null)
+            return Results.Unauthorized();
+
+        AddSongDirectorRequest addSongDirectorRequest = new(
+            requesterId,
+            newSongDirector.Name,
+            newSongDirector.EmailAddress,
+            newSongDirector.PhoneNumber,
+            newSongDirector.Rank,
+            newSongDirector.IsActive);
+
+        return await addSongDirectorInteractor
+            .HandleAsync(addSongDirectorRequest)
             .ConfigureAwait(false);
     });
 

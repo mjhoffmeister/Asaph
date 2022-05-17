@@ -1,87 +1,101 @@
-﻿using System.Collections.Generic;
+﻿using FluentResults;
+using System.Collections.Generic;
 using System.Linq;
-using FluentResults;
 
-namespace Asaph.Core.Domain.SongDirectorAggregate
+namespace Asaph.Core.Domain.SongDirectorAggregate;
+
+/// <summary>
+/// Rank value object.
+/// </summary>
+public sealed record Rank
 {
-    public sealed record Rank
+    private Rank(string name, int number) => (Name, Number) = (name, number);
+
+    /// <summary>
+    /// Apprentice.
+    /// </summary>
+    public static Rank Apprentice => new("Apprentice", 1);
+
+    /// <summary>
+    /// Journeyer.
+    /// </summary>
+    public static Rank Journeyer => new("Journeyer", 2);
+
+    /// <summary>
+    /// Master.
+    /// </summary>
+    public static Rank Master => new("Master", 3);
+
+    /// <summary>
+    /// Grandmaster.
+    /// </summary>
+    public static Rank Grandmaster => new("Grandmaster", 4);
+
+    /// <summary>
+    /// Name.
+    /// </summary>
+    public string Name { get; }
+
+    /// <summary>
+    /// Number.
+    /// </summary>
+    public int Number { get; }
+
+    /// <summary>
+    /// Enumberates ranks.
+    /// </summary>
+    /// <returns>A collection of all ranks.</returns>
+    public static IEnumerable<Rank> Enumerate()
     {
-        public static Rank Apprentice => new("Apprentice", 1);
+        yield return Apprentice;
+        yield return Journeyer;
+        yield return Master;
+        yield return Grandmaster;
+    }
 
-        public static Rank Journeyer => new("Journeyer", 2);
+    /// <summary>
+    /// Tries to get a rank by name.
+    /// </summary>
+    /// <param name="name">Name.</param>
+    /// <returns>The result of the attempt.</returns>
+    public static Result<Rank?> TryGetByName(string? name)
+    {
+        if (name == null)
+            return Result.Ok();
 
-        public static Rank Master => new("Master", 3);
+        Rank? rank = Enumerate().SingleOrDefault(r => r.Name == name);
 
-        public static Rank Grandmaster => new("Grandmaster", 4);
+        if (rank == null)
+            return Result.Fail("Invalid rank.");
 
-        private Rank(string name, int number) => (Name, Number) = (name, number);
+        return Result.Ok<Rank?>(rank);
+    }
 
-        /// <summary>
-        /// Name.
-        /// </summary>
-        public string Name { get; }
+    /// <summary>
+    /// Tries to get the rank that comes after this one.
+    /// </summary>
+    /// <returns>The result of the attempt.</returns>
+    public Result<Rank> TryGetNext()
+    {
+        Rank? nextRank = Enumerate().SingleOrDefault(r => r.Number == Number + 1);
 
-        /// <summary>
-        /// Number.
-        /// </summary>
-        public int Number { get; }
+        if (nextRank == null)
+            return Result.Fail($"There is no rank after {Name}.");
 
-        /// <summary>
-        /// Enumberates ranks.
-        /// </summary>
-        /// <returns>A collection of all ranks.</returns>
-        public static IEnumerable<Rank> Enumerate()
-        {
-            yield return Apprentice;
-            yield return Journeyer;
-            yield return Master;
-            yield return Grandmaster;
-        }
+        return Result.Ok(nextRank);
+    }
 
-        /// <summary>
-        /// Tries to get a rank by name.
-        /// </summary>
-        /// <param name="name">Name.</param>
-        /// <returns>The result of the attempt.</returns>
-        public static Result<Rank?> TryGetByName(string? name)
-        {
-            if (name == null)
-                return Result.Ok();
+    /// <summary>
+    /// Tries to get the rank that comes before this one.
+    /// </summary>
+    /// <returns>The result of the attempt.</returns>
+    public Result<Rank> TryGetPrevious()
+    {
+        Rank? previousRank = Enumerate().SingleOrDefault(r => r.Number == Number - 1);
 
-            Rank? rank = Enumerate().SingleOrDefault(r => r.Name == name);
+        if (previousRank == null)
+            return Result.Fail($"There is no rank before {Name}.");
 
-            if (rank == null)
-                return Result.Fail("Invalid rank.");
-
-            return Result.Ok<Rank?>(rank);
-        }
-
-        /// <summary>
-        /// Tries to get the rank that comes after this one.
-        /// </summary>
-        /// <returns>The result of the attempt.</returns>
-        public Result<Rank> TryGetNext()
-        {
-            Rank? nextRank = Enumerate().SingleOrDefault(r => r.Number == Number + 1);
-
-            if (nextRank == null)
-                return Result.Fail($"There is no rank after {Name}.");
-
-            return Result.Ok(nextRank);
-        }
-
-        /// <summary>
-        /// Tries to get the rank that comes before this one.
-        /// </summary>
-        /// <returns>The result of the attempt.</returns>
-        public Result<Rank> TryGetPrevious()
-        {
-            Rank? previousRank = Enumerate().SingleOrDefault(r => r.Number == Number - 1);
-
-            if (previousRank == null)
-                return Result.Fail($"There is no rank before {Name}.");
-
-            return Result.Ok(previousRank);
-        }
+        return Result.Ok(previousRank);
     }
 }

@@ -44,7 +44,7 @@ namespace Asaph.Core.UnitTests.UseCases
             IAsyncRepository<SongDirector> songDirectorRepository = GetMockSongDirectorRepository(
                 requesterRank);
 
-            AddSongDirectorDefaultBoundary boundary = new();
+            AddSongDirectorTestBoundary boundary = new();
 
             AddSongDirectorInteractor<AddSongDirectorResponse> addSongDirectorInteractor =
                 new(songDirectorRepository, boundary);

@@ -3,7 +3,12 @@
 /// </summary>
 internal class BadGatewayObjectResult : IResult
 {
-    public BadGatewayObjectResult(object value, string contentType) => 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BadGatewayObjectResult"/> class.
+    /// </summary>
+    /// <param name="value">Value.</param>
+    /// <param name="contentType">Content type.</param>
+    public BadGatewayObjectResult(object value, string contentType) =>
         (ContentType, Value) = (contentType, value);
 
     /// <summary>
@@ -16,6 +21,7 @@ internal class BadGatewayObjectResult : IResult
     /// </summary>
     public object Value { get; }
 
+    /// <inheritdoc/>
     public Task ExecuteAsync(HttpContext httpContext)
     {
         int badGatewayStatusCode = StatusCodes.Status502BadGateway;
@@ -44,6 +50,8 @@ internal class BadGatewayObjectResult : IResult
         ILogger? logger = loggerFactory.CreateLogger(GetType());
 
         logger?.LogInformation(
-            $"Executing {nameof(BadGatewayObjectResult)}. Writing value of type {valueType.Name}.");
+            "Executing {ResultName}. Writing value of type {ValueTypeName}.",
+            nameof(BadGatewayObjectResult),
+            valueType.Name);
     }
 }

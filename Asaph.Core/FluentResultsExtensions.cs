@@ -20,7 +20,7 @@ public static class FluentResultsExtensions
     /// <summary>
     /// Gets all error messages and combines them into a single string, separated by new lines.
     /// </summary>
-    /// <typeparam name="T">The type of the <see cref="Result>.</typeparam>
+    /// <typeparam name="T">The type of the <see cref="Result"/>.</typeparam>
     /// <param name="result">The result for which to get error messages.</param>
     /// <returns><see cref="string"/>.</returns>
     public static string GetErrorMessagesString<T>(this Result<T> result) =>

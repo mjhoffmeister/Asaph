@@ -1,9 +1,11 @@
-﻿namespace Asaph.Core.UseCases.GetSongDirectors;
+﻿using Asaph.Core.UseCases.GetSongDirectors;
+
+namespace Asaph.Core.UnitTests.UseCases;
 
 /// <summary>
-/// Default boundary implementation for the Get Song Directors use case.
+/// Test boundary implementation for the Get Song Directors use case.
 /// </summary>
-public class GetSongDirectorsDefaultBoundary
+public class GetSongDirectorsTestBoundary
     : IGetSongDirectorsBoundary<GetSongDirectorsResponse>
 {
     /// <inheritdoc/>

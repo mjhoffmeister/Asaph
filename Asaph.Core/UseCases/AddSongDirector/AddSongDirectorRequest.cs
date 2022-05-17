@@ -6,9 +6,9 @@
     public class AddSongDirectorRequest
     {
         /// <summary>
-        /// Creates a new request for adding a song director.
+        /// Initializes a new instance of the <see cref="AddSongDirectorRequest"/> class.
         /// </summary>
-        /// <param name="requesterRank">
+        /// <param name="requesterId">
         /// The rank of the person requesting the song director add.
         /// </param>
         /// <param name="fullName">Full name of the new song director.</param>
