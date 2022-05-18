@@ -47,7 +47,9 @@ public static class RemoveSongDirectorInteractorTests
         RemoveSongDirectorRequest removeSongDirectorRequest = new(requesterId, songDirectorId);
 
         RemoveSongDirectorInteractor<RemoveSongDirectorResponse> removeSongDirectorInteractor = new(
-            songDirectorRepository, boundary, NullLogger.Instance);
+            songDirectorRepository,
+            boundary,
+            NullLogger<RemoveSongDirectorInteractor<RemoveSongDirectorResponse>>.Instance);
 
         // Act
 

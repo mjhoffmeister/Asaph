@@ -22,7 +22,9 @@ string hydraContextUri = builder.Configuration["HydraContextUri"];
 
 string songDirectorsBaseUri = @$"{baseUri.TrimEnd('/')}/song-directors/";
 
-builder.Logging.AddConsole();
+builder.Logging
+    .ClearProviders()
+    .AddConsole();
 
 builder.Services.AddCors();
 
@@ -30,7 +32,8 @@ builder.Services.AddCors();
 builder.Services
     .AddAsaphServices(builder.Configuration)
     .AddAddSongDirectorUseCase(songDirectorsBaseUri, hydraContextUri)
-    .AddGetSongDirectorsUseCase(songDirectorsBaseUri, hydraContextUri);
+    .AddGetSongDirectorsUseCase(songDirectorsBaseUri, hydraContextUri)
+    .AddRemoveSongDirectorUseCase(songDirectorsBaseUri, hydraContextUri);
 
 // Add Azure AD B2C authentication
 builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzureAdb2c");

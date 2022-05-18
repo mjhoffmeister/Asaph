@@ -26,7 +26,7 @@ public class RemoveSongDirectorInteractor<TOutput>
     public RemoveSongDirectorInteractor(
         IAsyncRepository<SongDirector> songDirectorRepository,
         IRemoveSongDirectorBoundary<TOutput> boundary,
-        ILogger logger)
+        ILogger<RemoveSongDirectorInteractor<TOutput>> logger)
     {
         _boundary = boundary;
         _logger = logger;
