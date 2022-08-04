@@ -11,7 +11,7 @@ public interface IRemoveSongDirectorBoundary<TOutput>
     /// Cannot remove self.
     /// </summary>
     /// <param name="response">Response.</param>
-    /// <returns>Output</returns>
+    /// <returns>Output.</returns>
     TOutput CannotRemoveSelf(RemoveSongDirectorResponse response);
 
     /// <summary>

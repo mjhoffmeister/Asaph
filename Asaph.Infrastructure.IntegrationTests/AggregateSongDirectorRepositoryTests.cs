@@ -282,6 +282,7 @@ public class AggregateSongDirectorRepositoryTests
             configuration["DynamoDB:AwsAccessKeyId"],
             configuration["DynamoDB:AwsSecretAccessKey"],
             awsRegionSystemName,
+            configuration["DynamoDB:TableNamePrefix"],
             configuration["DynamoDB:DynamoDBLocalUrl"],
             useDynamoDBLocal);
 

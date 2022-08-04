@@ -1,4 +1,5 @@
 ﻿using Asaph.Core.UseCases.GetSongDirectors;
+using Asaph.WebApi.UseCases;
 using Hydra.NET;
 using System.Net;
 
@@ -11,8 +12,8 @@ internal class GetSongDirectorsApiBoundary : ApiBoundary, IGetSongDirectorsBound
     /// Initializes a new instance of the <see cref="GetSongDirectorsApiBoundary"/> class.
     /// </summary>
     /// <param name="configuration">Configuration.</param>
-    public GetSongDirectorsApiBoundary(ApiBoundaryConfiguration configuration)
-        : base(configuration)
+    public GetSongDirectorsApiBoundary(IConfiguration configuration)
+        : base(configuration, RelativeResourceUrls.SongDirectors)
     {
     }
 

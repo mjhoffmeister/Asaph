@@ -2,7 +2,7 @@
 using Hydra.NET;
 using System.Net;
 
-namespace Asaph.WebApi.ApiBoundaries;
+namespace Asaph.WebApi.UseCases.RemoveSongDirectors;
 
 /// <summary>
 /// API boundary for the Remove Song Director use case.
@@ -13,8 +13,8 @@ internal class RemoveSongDirectorApiBoundary : ApiBoundary, IRemoveSongDirectorB
     /// Initializes a new instance of the <see cref="RemoveSongDirectorApiBoundary"/> class.
     /// </summary>
     /// <param name="configuration">Configuration.</param>
-    public RemoveSongDirectorApiBoundary(ApiBoundaryConfiguration configuration)
-        : base(configuration)
+    public RemoveSongDirectorApiBoundary(IConfiguration configuration)
+        : base(configuration, RelativeResourceUrls.SongDirectors)
     {
     }
 

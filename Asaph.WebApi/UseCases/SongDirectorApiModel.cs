@@ -6,6 +6,9 @@ using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 
+/// <summary>
+/// Song director API model.
+/// </summary>
 internal class SongDirectorApiModel
 {
     /// <summary>

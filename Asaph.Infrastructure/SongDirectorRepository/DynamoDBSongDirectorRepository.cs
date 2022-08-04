@@ -15,6 +15,7 @@ public record struct DynamoDBConfiguration(
     string AwsAccessKeyId,
     string AwsSecretAccessKey,
     string AwsRegionSystemName,
+    string TableNamePrefix,
     string DynamoDBLocalUrl,
     bool UseDynamoDBLocal);
 
@@ -24,6 +25,7 @@ public record struct DynamoDBConfiguration(
 public class DynamoDBSongDirectorRepository : ISongDirectorRepositoryFragment
 {
     private readonly AmazonDynamoDBClient _dynamoDBClient;
+    private readonly DynamoDBContextConfig _dynamoDBContextConfig;
     private readonly string _songDirectorTableName = "SongDirectors";
 
     /// <summary>
@@ -31,11 +33,18 @@ public class DynamoDBSongDirectorRepository : ISongDirectorRepositoryFragment
     /// class.
     /// </summary>
     /// <param name="configuration">Configuration.</param>
-    public DynamoDBSongDirectorRepository(DynamoDBConfiguration configuration) =>
+    public DynamoDBSongDirectorRepository(DynamoDBConfiguration configuration)
+    {
         _dynamoDBClient = new(
             configuration.AwsAccessKeyId,
             configuration.AwsSecretAccessKey,
             GetAmazonDynamoDBConfig(configuration));
+
+        _dynamoDBContextConfig = GetDynamoDBContextConfig(configuration);
+
+        if (!string.IsNullOrWhiteSpace(configuration.TableNamePrefix))
+            _songDirectorTableName = configuration.TableNamePrefix + _songDirectorTableName;
+    }
 
     /// <summary>
     /// Gets the operation execution for the method.
@@ -69,7 +78,7 @@ public class DynamoDBSongDirectorRepository : ISongDirectorRepositoryFragment
         // Try to add the song director to DynamoDB
         try
         {
-            using DynamoDBContext context = new(_dynamoDBClient);
+            using DynamoDBContext context = GetContext();
 
             await context
                 .SaveAsync(songDirectorDataModel)
@@ -173,7 +182,7 @@ public class DynamoDBSongDirectorRepository : ISongDirectorRepositoryFragment
     {
         try
         {
-            using DynamoDBContext context = new(_dynamoDBClient);
+            using DynamoDBContext context = GetContext();
 
             SongDirectorDataModel? songDirectorDataModel = await context
                 .LoadAsync<SongDirectorDataModel>(id)
@@ -206,7 +215,7 @@ public class DynamoDBSongDirectorRepository : ISongDirectorRepositoryFragment
     {
         try
         {
-            using DynamoDBContext context = new(_dynamoDBClient);
+            using DynamoDBContext context = GetContext();
 
             await context
                 .DeleteAsync<SongDirectorDataModel>(id)
@@ -249,7 +258,7 @@ public class DynamoDBSongDirectorRepository : ISongDirectorRepositoryFragment
     {
         try
         {
-            using DynamoDBContext context = new(_dynamoDBClient);
+            using DynamoDBContext context = GetContext();
 
             await context
                 .SaveAsync(songDirectorDataModel)
@@ -294,6 +303,20 @@ public class DynamoDBSongDirectorRepository : ISongDirectorRepositoryFragment
     }
 
     /// <summary>
+    /// Gets context configuration.
+    /// </summary>
+    /// <param name="configuration"><see cref="DynamoDBConfiguration"/>.</param>
+    /// <returns><see cref="DynamoDBContextConfig"/>.</returns>
+    private static DynamoDBContextConfig GetDynamoDBContextConfig(
+        DynamoDBConfiguration configuration)
+    {
+        return new()
+        {
+            TableNamePrefix = configuration.TableNamePrefix,
+        };
+    }
+
+    /// <summary>
     /// Gets a result indicating that the song directors table couldn't be created.
     /// </summary>
     /// <param name="createTableResponse">The result of the create table request.</param>
@@ -304,6 +327,15 @@ public class DynamoDBSongDirectorRepository : ISongDirectorRepositoryFragment
         return Result.Fail(
             $"Could not create the {_songDirectorTableName} table. HTTP status code: " +
             $"{createTableResponse.HttpStatusCode}");
+    }
+
+    /// <summary>
+    /// Gets a context for a DynamoDB operation.
+    /// </summary>
+    /// <returns><see cref="DynamoDBContext"/>.</returns>
+    private DynamoDBContext GetContext()
+    {
+        return new DynamoDBContext(_dynamoDBClient, _dynamoDBContextConfig);
     }
 
     /// <summary>
@@ -341,7 +373,7 @@ public class DynamoDBSongDirectorRepository : ISongDirectorRepositoryFragment
 
     private async Task<Result> CreateSongDirectorsTableIfNotExists()
     {
-        using DynamoDBContext dynamoDBContext = new(_dynamoDBClient);
+        using DynamoDBContext dynamoDBContext = GetContext();
 
         ListTablesResponse listTablesResponse = await _dynamoDBClient
             .ListTablesAsync()

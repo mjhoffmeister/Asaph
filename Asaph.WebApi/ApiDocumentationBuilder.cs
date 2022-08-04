@@ -1,8 +1,17 @@
 ﻿using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 
-static internal class ApiDocumentationBuilder
+/// <summary>
+/// Assists with building API documentation.
+/// </summary>
+internal static class ApiDocumentationBuilder
 {
+    /// <summary>
+    /// Gets OpenAPI documentation for the Asaph API.
+    /// </summary>
+    /// <param name="configuration">Configuration.</param>
+    /// <param name="requester">Requester.</param>
+    /// <returns><see cref="OpenApiDocument"/>.</returns>
     public static OpenApiDocument GetAsaphOpenApiDocument(
         IConfiguration configuration,
         ClaimsPrincipal requester)

@@ -1,10 +1,6 @@
-using Asaph.Bootstrapper;
 using Asaph.Core.UseCases;
-using Asaph.Core.UseCases.AddSongDirector;
-using Asaph.Core.UseCases.GetSongDirectors;
-using Asaph.Core.UseCases.RemoveSongDirector;
 using Asaph.WebApi.GcpSecretManagerConfigurationProvider;
-using Microsoft.AspNetCore.Authorization;
+using Asaph.WebApi.UseCases;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
@@ -18,48 +14,35 @@ builder.Configuration.AddEnvironmentVariables();
 
 string baseUri = builder.Configuration["BaseUri"];
 
-string hydraContextUri = builder.Configuration["HydraContextUri"];
-
-string songDirectorsBaseUri = @$"{baseUri.TrimEnd('/')}/song-directors/";
-
 builder.Logging
     .ClearProviders()
     .AddConsole();
 
-builder.Services.AddCors();
-
-// Add Asaph services and use cases
 builder.Services
-    .AddAsaphServices(builder.Configuration)
-    .AddAddSongDirectorUseCase(songDirectorsBaseUri, hydraContextUri)
-    .AddGetSongDirectorsUseCase(songDirectorsBaseUri, hydraContextUri)
-    .AddRemoveSongDirectorUseCase(songDirectorsBaseUri, hydraContextUri);
-
-// Add Azure AD B2C authentication
-builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzureAdb2c");
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("GrandmasterOnly", policy =>
+    .AddCors()
+    .AddUseCaseApis(builder.Configuration)
+    .AddAuthorization(options =>
     {
-        policy.RequireClaim("Roles", Roles.GrandmasterSongDirector);
-    });
-});
+        options.AddPolicy("GrandmasterOnly", policy =>
+        {
+            policy.RequireClaim("Roles", Roles.GrandmasterSongDirector);
+        });
+    })
+    .AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzureAdb2c");
 
 WebApplication? app = builder.Build();
 
 string[] allowedOrigins = builder.Configuration["Cors:AllowedOrigins"].Split(',');
 
-app.UseCors(c => c
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .WithOrigins(allowedOrigins)
-    .SetIsOriginAllowed(origin => true)
-    .AllowCredentials());
-
-app.UseAuthentication();
-
-app.UseAuthorization();
+app
+    .UseCors(c => c
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithOrigins(allowedOrigins)
+        .SetIsOriginAllowed(origin => true)
+        .AllowCredentials())
+    .UseAuthentication()
+    .UseAuthorization();
 
 // Set the API documentation path
 string apiDocumentationPath = "/api-docs/current/openapi.json";
@@ -79,74 +62,6 @@ app.MapGet(
             .Serialize(OpenApiSpecVersion.OpenApi3_0, OpenApiFormat.Json);
 
         return Results.Content(json, "application/json");
-    });
-
-app.MapDelete(
-    "/song-directors/{id}",
-    [Authorize]
-    async (
-        string id,
-        HttpContext http,
-        IAsyncUseCaseInteractor<RemoveSongDirectorRequest, IResult> removeSongDirectorInteractor) =>
-        {
-            string? requesterId = http.User.GetNameIdentifierId();
-
-            if (requesterId == null || !http.User.IsGrandmasterSongDirector())
-                return Results.Unauthorized();
-
-            RemoveSongDirectorRequest removeSongDirectorRequest = new(requesterId, id);
-
-            return await removeSongDirectorInteractor
-                .HandleAsync(removeSongDirectorRequest)
-                .ConfigureAwait(false);
-        });
-
-// Set up REST API for getting song directors
-app.MapGet(
-    "/song-directors",
-    [Authorize]
-    async (
-        HttpContext http,
-        IAsyncUseCaseInteractor<
-            GetSongDirectorsRequest, IResult> getSongDirectorsInteractor) =>
-    {
-        string? requesterId = http.User.GetNameIdentifierId();
-
-        if (requesterId == null)
-            return Results.Unauthorized();
-
-        GetSongDirectorsRequest getSongDirectorsRequest = new(requesterId);
-
-        return await getSongDirectorsInteractor
-            .HandleAsync(getSongDirectorsRequest)
-            .ConfigureAwait(false);
-    });
-
-// Set up REST API for adding song directors
-app.MapPost(
-    "/song-directors",
-    [Authorize]
-    async (
-        SongDirectorApiModel newSongDirector,
-        HttpContext http,
-        IAsyncUseCaseInteractor<AddSongDirectorRequest, IResult> addSongDirectorInteractor) =>
-    {
-        string? requesterId = http.User.GetNameIdentifierId();
-
-        if (requesterId == null)
-            return Results.Unauthorized();
-
-        AddSongDirectorRequest addSongDirectorRequest = new(
-            requesterId,
-            newSongDirector.Name,
-            newSongDirector.EmailAddress,
-            newSongDirector.PhoneNumber,
-            newSongDirector.Rank,
-            newSongDirector.IsActive);
-
-        return await addSongDirectorInteractor
-            .HandleAsync(addSongDirectorRequest)
-            .ConfigureAwait(false);
     });
 
 string? port;

@@ -34,6 +34,7 @@ namespace Asaph.Infrastructure.IntegrationTests
         /// <param name="isActive">Is active indicator to add.</param>
         /// <returns>The async operation.</returns>
         [Theory]
+        [InlineData("us-east-2", false, "d0321ca4-7050-4ca6-aaf5-4f51ae22ad13", true)]
         [InlineData("us-east-2", false, "d7a068f8-461d-42f2-a561-5ea2f843c2b3", true)]
         public static async Task TryAddAsync_ValidSongDirector_Succeeds(
             string awsRegionSystemName, bool useDynamoDBLocal, string songDirectorId, bool isActive)
@@ -95,7 +96,7 @@ namespace Asaph.Infrastructure.IntegrationTests
         /// <param name="expectedSongDirectorDataModelCount">Expected song director count.</param>
         /// <returns>The async operation.</returns>
         [Theory]
-        [InlineData("us-east-2", false, 1)]
+        [InlineData("us-east-2", false, 2)]
         public static async Task TryGetAllAsync(
             string awsRegionSystemName,
             bool useDynamoDBLocal,
@@ -254,11 +255,13 @@ namespace Asaph.Infrastructure.IntegrationTests
             string awsAccessKeyId = configuration["DynamoDB:AwsAccessKeyId"];
             string awsSecretAccessKey = configuration["DynamoDB:AwsSecretAccessKey"];
             string dynamoDBLocalUrl = configuration["DynamoDB:DynamoDBLocalUrl"];
+            string tableNamePrefix = "Dev_";
 
             return new(
                 awsAccessKeyId,
                 awsSecretAccessKey,
                 awsRegionSystemName,
+                tableNamePrefix,
                 dynamoDBLocalUrl,
                 useDynamoDBLocal);
         }
