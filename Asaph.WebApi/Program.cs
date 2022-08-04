@@ -66,6 +66,9 @@ app.MapGet(
         return Results.Content(json, "application/json");
     });
 
+// Map use case API endpoints
+app.MapUseCaseApiEndpoints();
+
 string? port;
 
 string? url = null;
