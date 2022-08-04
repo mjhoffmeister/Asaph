@@ -1,3 +1,4 @@
+using Asaph.Bootstrapper;
 using Asaph.Core.UseCases;
 using Asaph.WebApi.GcpSecretManagerConfigurationProvider;
 using Asaph.WebApi.UseCases;
@@ -20,6 +21,7 @@ builder.Logging
 
 builder.Services
     .AddCors()
+    .AddAsaphServices(builder.Configuration)
     .AddUseCaseApis(builder.Configuration)
     .AddAuthorization(options =>
     {
