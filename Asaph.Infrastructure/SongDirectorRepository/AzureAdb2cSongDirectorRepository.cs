@@ -403,6 +403,8 @@ public class AzureAdb2cSongDirectorRepository : ISongDirectorRepositoryFragment
     /// <returns>Song director rank name, if present; null, otherwise.</returns>
     private string? GetUserSongDirectorRankName(User user)
     {
+        Console.WriteLine($"Trying to get rank for {user.Id}.");
+
         if (user.AdditionalData?.TryGetValue(
             _rolesPropertyName, out object? rolesStringObject) == true
             && rolesStringObject is JsonElement rolesJsonElement)
@@ -411,12 +413,17 @@ public class AzureAdb2cSongDirectorRepository : ISongDirectorRepositoryFragment
 
             if (rolesString != null)
             {
+                Console.WriteLine(
+                    $"Retrieved roles string from user additional data: \"{rolesString}\".");
+
                 Match roleMatch = Regex.Match(rolesString, $"{Roles.SongDirectorRank}:(.+);?");
 
                 if (roleMatch.Success)
                     return roleMatch.Groups[1].Value;
             }
         }
+
+        Console.WriteLine($"Could not get roles string from user additional data.");
 
         return null;
     }
