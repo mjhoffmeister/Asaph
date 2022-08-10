@@ -53,6 +53,10 @@ public class AzureAdb2cSongDirectorRepository : ISongDirectorRepositoryFragment
             configuration.TenantId, configuration.ClientId, configuration.ClientSecret);
 
         _graphServiceClient = new GraphServiceClient(clientSecretCredential);
+
+        Console.WriteLine($"Tenant id: {configuration.TenantId}");
+        Console.WriteLine($"Client id: {configuration.ClientId}");
+        Console.WriteLine($"Exensions client id: {configuration.ExtensionsAppClientId}");
     }
 
     /// <summary>

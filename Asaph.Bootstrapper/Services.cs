@@ -25,9 +25,6 @@ namespace Asaph.Bootstrapper
                 .GetSection("AzureAdb2c")
                 .Get<AzureAdb2cConfiguration>();
 
-            System.Console.WriteLine($"Client id: {azureAdb2CConfiguration.ClientId}.");
-            System.Console.WriteLine($"Extensions client id: {azureAdb2CConfiguration.ExtensionsAppClientId}.");
-
             // Get Dynamo DB configuration
             DynamoDBConfiguration dynamoDBConfiguration = configuration
                 .GetSection("DynamoDB")
