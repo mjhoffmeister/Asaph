@@ -425,6 +425,15 @@ public class AzureAdb2cSongDirectorRepository : ISongDirectorRepositoryFragment
 
         Console.WriteLine($"Could not get roles string from user additional data.");
 
+        if (user.AdditionalData != null)
+        {
+            Console.WriteLine("Listing user additional data:");
+            foreach ((string key, object value) in user.AdditionalData)
+            {
+                Console.WriteLine($"{key}: {value}");
+            }
+        }
+
         return null;
     }
 }
