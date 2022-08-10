@@ -44,7 +44,7 @@ namespace Asaph.Core.UnitTests.UseCases
             // Assert
 
             Assert.All(
-                response.SongDirectors,
+                response.SongDirectors!,
                 songDirector => Assert.True(songDirector.Rank == null ^ shouldHaveRanks));
         }
 
@@ -93,7 +93,7 @@ namespace Asaph.Core.UnitTests.UseCases
             // Assert
 
             Assert.Collection(
-                response.SongDirectors,
+                response.SongDirectors!,
                 janeDoe => Assert.Equal(expectedJaneDoeExpectedIsDeletable, janeDoe.IsDeletable),
                 zhangXia => Assert.Equal(expectedZhangXiaExpectedIsDeletable, zhangXia.IsDeletable),
                 satoGota => Assert.Equal(expectedSatoGotaExpectedIsDeletable, satoGota.IsDeletable),
@@ -145,7 +145,7 @@ namespace Asaph.Core.UnitTests.UseCases
             // Assert
 
             Assert.Collection(
-                response.SongDirectors,
+                response.SongDirectors!,
                 janeDoe => Assert.Equal(expectedJaneDoeExpectedIsEditable, janeDoe.IsEditable),
                 zhangXia => Assert.Equal(expectedZhangXiaExpectedIsEditable, zhangXia.IsEditable),
                 satoGota => Assert.Equal(expectedSatoGotaExpectedIsEditable, satoGota.IsEditable),
