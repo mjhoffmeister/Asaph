@@ -40,7 +40,7 @@ internal static class ApiDocumentationBuilder
             {
                 Schemas = new Dictionary<string, OpenApiSchema>
                 {
-                    ["SongDirector"] = SongDirectorApiModel.GetJsonSchema(requester),
+                    ["SongDirector"] = SongDirectorApiModel.GetOpenApiSchema(requester),
                 },
                 SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>
                 {

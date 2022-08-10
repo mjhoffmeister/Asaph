@@ -41,10 +41,10 @@ public class AggregateSongDirectorRepositoryTests
     [InlineData(
         "us-east-2",
         true,
-        "Jane Doe",
-        "jane.doe@example.com",
-        "123-456-1234",
-        "Journeyer",
+        "{song director name}",
+        "{song director email address}",
+        "{song director phone number}",
+        "{song director rank}",
         true)
     ]
     public static async Task TryAddAsync_ValidSongDirector_Succeeds(
@@ -85,21 +85,24 @@ public class AggregateSongDirectorRepositoryTests
     /// <param name="useDynamoDBLocal">Indicates whether or not to use Dynamo DB local.</param>
     /// <param name="songDirectorId">Song director id.</param>
     /// <param name="expectedRankName">Expected rank name.</param>
+    /// <param name="userSecretsSection">User secrets section.</param>
     /// <returns>The async operation.</returns>
     [Theory]
-    [InlineData("us-east-2", true, "5144f766-dae4-45f1-9f1a-dc52070e6910", "Grandmaster")]
+    [InlineData("us-east-2", false, "{user id}", "{rank name}", "{user secrets section}")]
     public static async Task TryFindPropertyById_Rank_ReturnsExpectedRankName(
         string awsRegionSystemName,
         bool useDynamoDBLocal,
         string songDirectorId,
-        string expectedRankName)
+        string expectedRankName,
+        string userSecretsSection)
     {
         // Arrange
 
         string propertyName = "Rank";
 
         AggregateSongDirectorRepository aggregateSongDirectorRepository =
-            GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
+            GetAggregateSongDirectorRepository(
+                awsRegionSystemName, useDynamoDBLocal, userSecretsSection);
 
         // Act
 
@@ -148,16 +151,21 @@ public class AggregateSongDirectorRepositoryTests
     /// <param name="awsRegionSystemName">AWS region system name.</param>
     /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
     /// <param name="songDirectorId">Song director id.</param>
+    /// <param name="userSecretsSection">User secrets section.</param>
     /// <returns>The async operation.</returns>
     [Theory]
-    [InlineData("us-east-2", true, "d9a46d53-3fa6-4ab5-a8a4-612d5f5facda")]
+    [InlineData("us-east-2", false, "{user id}", "{user secrets section}")]
     public static async Task TryGetByIdAsync_ExistingSongDirector_Succeeds(
-        string awsRegionSystemName, bool useDynamoDBLocal, string songDirectorId)
+        string awsRegionSystemName,
+        bool useDynamoDBLocal,
+        string songDirectorId,
+        string userSecretsSection)
     {
         // Arrange
 
         AggregateSongDirectorRepository aggregateSongDirectorRepository =
-            GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
+            GetAggregateSongDirectorRepository(
+                awsRegionSystemName, useDynamoDBLocal, userSecretsSection);
 
         // Act
 
@@ -178,7 +186,7 @@ public class AggregateSongDirectorRepositoryTests
     /// <param name="songDirectorId">Song director id.</param>
     /// <returns>The async operation.</returns>
     [Theory]
-    [InlineData("us-east-2", true, "d1a56b38-6380-4420-a443-b647325407fc")]
+    [InlineData("us-east-2", true, "{user id}")]
     public static async Task TryRemoveByIdAsync_ExistingSongDirector_Succeeds(
         string awsRegionSystemName, bool useDynamoDBLocal, string songDirectorId)
     {
@@ -209,17 +217,19 @@ public class AggregateSongDirectorRepositoryTests
     /// <param name="phoneNumber">Phone number.</param>
     /// <param name="rankName">Rank name.</param>
     /// <param name="isActive">Active indicator.</param>
+    /// <param name="userSecretsSection">User secrets section.</param>
     /// <returns>The async operation.</returns>
     [Theory]
     [InlineData(
         "us-east-2",
+        false,
+        "{song director id}",
+        "{song director name}",
+        "{song director email}",
+        "{song director phone number}",
+        "{song director rank}",
         true,
-        "d1a56b38-6380-4420-a443-b647325407fc",
-        "Jane Doe",
-        "jdoe@example.com",
-        "456-789-4567",
-        "Master",
-        false)
+        "{user secrets section}")
     ]
     public static async Task TryUpdateAsync_ExistingSongDirector_Succeeds(
         string awsRegionSystemName,
@@ -229,7 +239,8 @@ public class AggregateSongDirectorRepositoryTests
         string emailAddress,
         string phoneNumber,
         string rankName,
-        bool isActive)
+        bool isActive,
+        string userSecretsSection)
     {
         // Arrange
 
@@ -240,7 +251,8 @@ public class AggregateSongDirectorRepositoryTests
         songDirector.UpdateId(songDirectorId);
 
         AggregateSongDirectorRepository aggregateSongDirectorRepository =
-            GetAggregateSongDirectorRepository(awsRegionSystemName, useDynamoDBLocal);
+            GetAggregateSongDirectorRepository(
+                awsRegionSystemName, useDynamoDBLocal, userSecretsSection);
 
         // Act
 
@@ -258,9 +270,12 @@ public class AggregateSongDirectorRepositoryTests
     /// </summary>
     /// <param name="awsRegionSystemName">AWS region system name.</param>
     /// <param name="useDynamoDBLocal">Indicates whether to use Dynamo DB local.</param>
+    /// <param name="userSecretsSection">
+    /// The configuration section to use in user secrets. Defaults to "Dev".
+    /// </param>
     /// <returns><see cref="AggregateSongDirectorRepository"/>.</returns>
     private static AggregateSongDirectorRepository GetAggregateSongDirectorRepository(
-        string awsRegionSystemName, bool useDynamoDBLocal)
+        string awsRegionSystemName, bool useDynamoDBLocal, string? userSecretsSection = "Dev")
     {
         ConfigurationBuilder builder = new();
 
@@ -269,21 +284,21 @@ public class AggregateSongDirectorRepositoryTests
         IConfiguration configuration = builder.Build();
 
         AzureAdb2cConfiguration azureAdb2CConfiguration = new(
-            configuration["AzureAdb2c:ClientId"],
-            configuration["AzureAdb2c:ClientSecret"],
-            configuration["AzureAdb2c:Domain"],
-            configuration["AzureAdb2c:ExtensionsAppClientId"],
-            configuration["AzureAdb2c:TenantId"]);
+            configuration[$"{userSecretsSection}:AzureAdb2c:ClientId"],
+            configuration[$"{userSecretsSection}:AzureAdb2c:ClientSecret"],
+            configuration[$"{userSecretsSection}:AzureAdb2c:Domain"],
+            configuration[$"{userSecretsSection}:AzureAdb2c:ExtensionsAppClientId"],
+            configuration[$"{userSecretsSection}:AzureAdb2c:TenantId"]);
 
         AzureAdb2cSongDirectorRepository azureAdb2CSongDirectorRepository = new(
             azureAdb2CConfiguration);
 
         DynamoDBConfiguration dynamoDBConfiguration = new(
-            configuration["DynamoDB:AwsAccessKeyId"],
-            configuration["DynamoDB:AwsSecretAccessKey"],
+            configuration[$"{userSecretsSection}:DynamoDB:AwsAccessKeyId"],
+            configuration[$"{userSecretsSection}:DynamoDB:AwsSecretAccessKey"],
             awsRegionSystemName,
-            configuration["DynamoDB:TableNamePrefix"],
-            configuration["DynamoDB:DynamoDBLocalUrl"],
+            configuration[$"{userSecretsSection}:DynamoDB:TableNamePrefix"],
+            configuration[$"{userSecretsSection}:DynamoDB:DynamoDBLocalUrl"],
             useDynamoDBLocal);
 
         DynamoDBSongDirectorRepository amazonDynamoDBSongDirectorRepository = new(
