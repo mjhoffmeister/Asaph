@@ -56,6 +56,10 @@ namespace Asaph.Core.UseCases.GetSongDirectors
                 .Select(songDirector =>
                     songDirector.ConvertToUseCaseModel(requesterId, findRankResult.Value));
 
+            System.Console.WriteLine(
+                $"Song directors retrieved. Requester rank is " +
+                $"{findRankResult.ValueOrDefault?.Name ?? "not set"}");
+
             // Return a success response
             return Success(songDirectorModels);
         }
