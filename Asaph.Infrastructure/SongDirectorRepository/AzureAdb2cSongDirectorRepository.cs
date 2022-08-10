@@ -405,6 +405,8 @@ public class AzureAdb2cSongDirectorRepository : ISongDirectorRepositoryFragment
     {
         Console.WriteLine($"Trying to get rank for {user.Id}.");
 
+        Console.WriteLine($"Roles property name: {_rolesPropertyName}.");
+
         if (user.AdditionalData?.TryGetValue(
             _rolesPropertyName, out object? rolesStringObject) == true
             && rolesStringObject is JsonElement rolesJsonElement)
