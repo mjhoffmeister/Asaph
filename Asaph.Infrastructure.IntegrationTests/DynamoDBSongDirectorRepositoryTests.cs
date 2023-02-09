@@ -252,12 +252,12 @@ namespace Asaph.Infrastructure.IntegrationTests
                 .AddUserSecrets<DynamoDBSongDirectorRepositoryTests>()
                 .Build();
 
-            string awsAccessKeyId = configuration["DynamoDB:AwsAccessKeyId"];
-            string awsSecretAccessKey = configuration["DynamoDB:AwsSecretAccessKey"];
-            string dynamoDBLocalUrl = configuration["DynamoDB:DynamoDBLocalUrl"];
+            string awsAccessKeyId = configuration["DynamoDB:AwsAccessKeyId"]!;
+            string awsSecretAccessKey = configuration["DynamoDB:AwsSecretAccessKey"]!;
+            string dynamoDBLocalUrl = configuration["DynamoDB:DynamoDBLocalUrl"]!;
             string tableNamePrefix = "Dev_";
 
-            return new(
+            return new DynamoDBConfiguration(
                 awsAccessKeyId,
                 awsSecretAccessKey,
                 awsRegionSystemName,

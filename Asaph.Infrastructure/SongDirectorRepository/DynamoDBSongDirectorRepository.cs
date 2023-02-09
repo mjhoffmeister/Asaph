@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Asaph.Infrastructure.SongDirectorRepository;
 
-public record struct DynamoDBConfiguration(
+public record DynamoDBConfiguration(
     string AwsAccessKeyId,
     string AwsSecretAccessKey,
     string AwsRegionSystemName,

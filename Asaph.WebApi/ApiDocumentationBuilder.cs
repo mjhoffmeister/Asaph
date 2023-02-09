@@ -1,4 +1,6 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.Identity.Web.Resource;
+using Microsoft.OpenApi.Models;
+using System.Configuration;
 using System.Security.Claims;
 
 /// <summary>
@@ -58,7 +60,9 @@ internal static class ApiDocumentationBuilder
                                 Scopes = swaggerUIConfiguration
                                     .GetSection("Scopes")
                                     .GetChildren()
-                                    .ToDictionary(kv => kv.Value, kv => kv.Key),
+                                    .Where(section => section.Value != null)
+                                    .ToDictionary(
+                                        section => section.Value!, section => section.Key),
 
                                 TokenUrl = GetTokenUrl(azureAdb2cConfiguration),
                             },
@@ -76,8 +80,16 @@ internal static class ApiDocumentationBuilder
     /// <returns>Authorization URL.</returns>
     private static Uri GetAuthorizationUrl(IConfiguration azureAdb2cConfiguration)
     {
+        string? authorizationUrlTemplate = azureAdb2cConfiguration["AuthorizationUrlTemplate"];
+
+        if (authorizationUrlTemplate == null)
+        {
+            throw new ConfigurationErrorsException(
+                "Missing Azure AD B2C authorization URL template configuration.");
+        }
+
         return new(string.Format(
-            azureAdb2cConfiguration["AuthorizationUrlTemplate"],
+            authorizationUrlTemplate,
             azureAdb2cConfiguration["Instance"],
             azureAdb2cConfiguration["Domain"],
             azureAdb2cConfiguration["SignUpSignInPolicyId"]));
@@ -123,8 +135,16 @@ internal static class ApiDocumentationBuilder
     /// <returns>Token URL.</returns>
     private static Uri GetTokenUrl(IConfiguration azureAdb2cConfiguration)
     {
+        string? tokenUrlTemplate = azureAdb2cConfiguration["TokenUrlTemplate"];
+
+        if (tokenUrlTemplate == null)
+        {
+            throw new ConfigurationErrorsException(
+                "Missing Azure AD B2C token URL template configuration.");
+        }
+
         return new(string.Format(
-          azureAdb2cConfiguration["TokenUrlTemplate"],
+          tokenUrlTemplate,
           azureAdb2cConfiguration["Instance"],
           azureAdb2cConfiguration["Domain"],
           azureAdb2cConfiguration["SignUpSignInPolicyId"]));

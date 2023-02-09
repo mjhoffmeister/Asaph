@@ -12,7 +12,6 @@ internal class AddSongDirectorApiBoundary : ApiBoundary, IAddSongDirectorBoundar
     /// Initializes a new instance of the <see cref="AddSongDirectorApiBoundary"/> class.
     /// </summary>
     /// <param name="configuration">Configuration.</param>
-    /// <param name="relativeSongDirectorsUrl">Relative song directors URL.</param>
     public AddSongDirectorApiBoundary(IConfiguration configuration)
         : base(configuration, RelativeResourceUrls.SongDirectors)
     {

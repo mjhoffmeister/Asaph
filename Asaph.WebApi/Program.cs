@@ -6,6 +6,7 @@ using Microsoft.Identity.Web;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
+using System.Configuration;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,10 @@ builder.Configuration.AddGcpSecretManager(builder.Configuration);
 
 builder.Configuration.AddEnvironmentVariables();
 
-string baseUri = builder.Configuration["BaseUri"];
+string? baseUri = builder.Configuration["BaseUri"];
+
+if (baseUri == null)
+    throw new ConfigurationErrorsException("Missing base URI configuration.");
 
 builder.Logging
     .ClearProviders()
@@ -34,7 +38,10 @@ builder.Services
 
 WebApplication? app = builder.Build();
 
-string[] allowedOrigins = builder.Configuration["Cors:AllowedOrigins"].Split(',');
+string[]? allowedOrigins = builder.Configuration["Cors:AllowedOrigins"]?.Split(',');
+
+if (allowedOrigins == null)
+    throw new ConfigurationErrorsException("Missing CORS allowed origins configuration.");
 
 app
     .UseCors(c => c

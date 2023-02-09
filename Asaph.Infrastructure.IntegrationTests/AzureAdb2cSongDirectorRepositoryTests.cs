@@ -244,11 +244,11 @@ namespace Asaph.Infrastructure.IntegrationTests
             IConfiguration configuration = builder.Build();
 
             return new(
-                configuration["AzureAdb2c:ClientId"],
-                configuration["AzureAdb2c:ClientSecret"],
-                configuration["AzureAdb2c:Domain"],
-                configuration["AzureAdb2c:ExtensionsAppClientId"],
-                configuration["AzureAdb2c:TenantId"]);
+                configuration["AzureAdb2c:ClientId"]!,
+                configuration["AzureAdb2c:ClientSecret"]!,
+                configuration["AzureAdb2c:Domain"]!,
+                configuration["AzureAdb2c:ExtensionsAppClientId"]!,
+                configuration["AzureAdb2c:TenantId"]!);
         }
     }
 }

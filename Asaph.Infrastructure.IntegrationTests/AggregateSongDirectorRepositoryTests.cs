@@ -284,21 +284,21 @@ public class AggregateSongDirectorRepositoryTests
         IConfiguration configuration = builder.Build();
 
         AzureAdb2cConfiguration azureAdb2CConfiguration = new(
-            configuration[$"{userSecretsSection}:AzureAdb2c:ClientId"],
-            configuration[$"{userSecretsSection}:AzureAdb2c:ClientSecret"],
-            configuration[$"{userSecretsSection}:AzureAdb2c:Domain"],
-            configuration[$"{userSecretsSection}:AzureAdb2c:ExtensionsAppClientId"],
-            configuration[$"{userSecretsSection}:AzureAdb2c:TenantId"]);
+            configuration[$"{userSecretsSection}:AzureAdb2c:ClientId"]!,
+            configuration[$"{userSecretsSection}:AzureAdb2c:ClientSecret"]!,
+            configuration[$"{userSecretsSection}:AzureAdb2c:Domain"]!,
+            configuration[$"{userSecretsSection}:AzureAdb2c:ExtensionsAppClientId"]!,
+            configuration[$"{userSecretsSection}:AzureAdb2c:TenantId"]!);
 
         AzureAdb2cSongDirectorRepository azureAdb2CSongDirectorRepository = new(
             azureAdb2CConfiguration);
 
         DynamoDBConfiguration dynamoDBConfiguration = new(
-            configuration[$"{userSecretsSection}:DynamoDB:AwsAccessKeyId"],
-            configuration[$"{userSecretsSection}:DynamoDB:AwsSecretAccessKey"],
+            configuration[$"{userSecretsSection}:DynamoDB:AwsAccessKeyId"]!,
+            configuration[$"{userSecretsSection}:DynamoDB:AwsSecretAccessKey"]!,
             awsRegionSystemName,
-            configuration[$"{userSecretsSection}:DynamoDB:TableNamePrefix"],
-            configuration[$"{userSecretsSection}:DynamoDB:DynamoDBLocalUrl"],
+            configuration[$"{userSecretsSection}:DynamoDB:TableNamePrefix"]!,
+            configuration[$"{userSecretsSection}:DynamoDB:DynamoDBLocalUrl"]!,
             useDynamoDBLocal);
 
         DynamoDBSongDirectorRepository amazonDynamoDBSongDirectorRepository = new(
