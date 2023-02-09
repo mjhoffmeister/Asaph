@@ -71,7 +71,7 @@ public class AzureAdb2cSongDirectorRepository : ISongDirectorRepositoryFragment
         SongDirectorDataModel songDirectorDataModel)
     {
         // Create a user object for the user to add
-        User userToAdd = GetUserFromDataModel(songDirectorDataModel);
+        User userToAdd = GetUserFromDataModel(songDirectorDataModel, true);
 
         try
         {
@@ -283,7 +283,7 @@ public class AzureAdb2cSongDirectorRepository : ISongDirectorRepositoryFragment
             await _graphServiceClient
                 .Users[songDirectorId]
                 .Request()
-                .UpdateAsync(GetUserFromDataModel(songDirectorDataModel))
+                .UpdateAsync(GetUserFromDataModel(songDirectorDataModel, false))
                 .ConfigureAwait(false);
 
             return Result.Ok();
@@ -322,13 +322,13 @@ public class AzureAdb2cSongDirectorRepository : ISongDirectorRepositoryFragment
     /// </summary>
     /// <param name="songDirectorDataModel">The data model to convert.</param>
     /// <returns><see cref="User"/>.</returns>
-    private User GetUserFromDataModel(SongDirectorDataModel songDirectorDataModel)
+    private User GetUserFromDataModel(SongDirectorDataModel songDirectorDataModel, bool isNewUser)
     {
         string? fullName = songDirectorDataModel.FullName;
 
         string? mailNickname = fullName?.ToLower()?.Replace(' ', '.');
 
-        // Create a user object for the user to add
+        // Create a user object for the user
         User microsoftGraphUser = new()
         {
             AccountEnabled = true,
@@ -337,13 +337,18 @@ public class AzureAdb2cSongDirectorRepository : ISongDirectorRepositoryFragment
             Mail = songDirectorDataModel.EmailAddress,
             MailNickname = mailNickname,
             MobilePhone = songDirectorDataModel.PhoneNumber,
-            PasswordProfile = new()
+            UserPrincipalName = $"{mailNickname}@{_domain}",
+        };
+
+        // Configure the password profile for a new user
+        if (isNewUser)
+        {
+            microsoftGraphUser.PasswordProfile = new()
             {
                 ForceChangePasswordNextSignIn = false,
                 Password = Guid.NewGuid().ToString(),
-            },
-            UserPrincipalName = $"{mailNickname}@{_domain}",
-        };
+            };
+        }
 
         // Add the song director rank role, if the song director has a rank
         if (songDirectorDataModel.RankName is string rankName)

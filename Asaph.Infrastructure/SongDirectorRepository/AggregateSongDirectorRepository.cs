@@ -93,7 +93,7 @@ public class AggregateSongDirectorRepository : IAsyncRepository<SongDirector>
                 .WithErrors(findPropertyByIdResults.SelectMany(r => r.Errors));
         }
 
-        // If there are multiple successful results that contain different value return a
+        // If there are multiple successful results that contain different value, return a
         // failure result
         return Result.Fail($"The song director with id {id} has inconsistent values for " +
             $"{propertyName} across data sources. Manual remediation is required.");
@@ -398,7 +398,7 @@ public class AggregateSongDirectorRepository : IAsyncRepository<SongDirector>
         Func<ISongDirectorRepositoryFragment, SongDirectorDataModel, Task<Result>>
             tryRollBackAsync)
     {
-        // Cache the song director so that it can be restored if any deletes fail
+        // Cache the song director so that it can be restored if any changes fail
         Task<Result<SongDirector>> getSongDirectorTask = TryGetByIdAsync(songDirectorId);
 
         // Wait for the caching to complete before trying any operations on that song director
