@@ -254,7 +254,7 @@ internal class SongDirectorApiModel
             IsActive = useCaseModel.IsActive,
             Name = useCaseModel.Name,
             Operations = GetOperations(useCaseModel),
-            PhoneNumber = useCaseModel.PhoneNumber,
+            PhoneNumber = useCaseModel.PhoneNumber?.Insert(3, "-")?.Insert(7, "-"),
             Rank = useCaseModel.Rank,
         };
     }
